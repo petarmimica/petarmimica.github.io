@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>R versus C++ (and Fortran) | Using R</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="IntroductionThe purpose of this post is to illustrate how to integrate the C++ code into R using Rcpp library, and also to test how fast it is compared to R implementations of the minmod reconstructio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="R versus C++ (and Fortran)">
+<meta property="og:url" content="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/index.html">
+<meta property="og:site_name" content="Using R">
+<meta property="og:description" content="IntroductionThe purpose of this post is to illustrate how to integrate the C++ code into R using Rcpp library, and also to test how fast it is compared to R implementations of the minmod reconstructio">
+<meta property="og:locale" content="English">
+<meta property="og:image" content="http://petarmimica.github.io/testMinModRec_files/figure-markdown_github/unnamed-chunk-6-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/testMinModRec_files/figure-markdown_github/unnamed-chunk-8-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/testMinModRec_files/figure-markdown_github/unnamed-chunk-10-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/testMinModRec_files/figure-markdown_github/unnamed-chunk-12-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/testMinModRec_files/figure-markdown_github/unnamed-chunk-14-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/testMinModRec_files/figure-markdown_github/unnamed-chunk-15-1.png">
+<meta property="og:updated_time" content="2017-08-27T19:30:06.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="R versus C++ (and Fortran)">
+<meta name="twitter:description" content="IntroductionThe purpose of this post is to illustrate how to integrate the C++ code into R using Rcpp library, and also to test how fast it is compared to R implementations of the minmod reconstructio">
+<meta name="twitter:image" content="http://petarmimica.github.io/testMinModRec_files/figure-markdown_github/unnamed-chunk-6-1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Using R" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Using R</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">(for data analysis and visualization)</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://petarmimica.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-R-versus-C-and-Fortran" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/08/08/R-versus-C-and-Fortran/" class="article-date">
+  <time datetime="2017-08-08T10:00:00.000Z" itemprop="datePublished">2017-08-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      R versus C++ (and Fortran)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>The purpose of this post is to illustrate how to integrate the C++ code into R using Rcpp library, and also to test how fast it is compared to R implementations of the minmod reconstruction often used in finite volume methods. I also show a comparison with a Fortran code.</p>
+<p>Note that the details of what minmod exactly does are not crucial here. Check page 5 of <a href="https://ocw.mit.edu/courses/mathematics/18-336-numerical-methods-for-partial-differential-equations-spring-2009/lecture-notes/MIT18_336S09_lec19.pdf" target="_blank" rel="external">this document</a> for a quick overview. The point is that it involves a series of straightforward floating point vector operations and one part where two decisions need to be taken in order to compute the final result.</p>
+<h1 id="Compile-the-C-code"><a href="#Compile-the-C-code" class="headerlink" title="Compile the C++ code:"></a>Compile the C++ code:</h1><p>This is the C++ routine that is compiled and imported into R using the <a href="http://www.rcpp.org/" target="_blank" rel="external">Rcpp</a> library.</p>
+<pre><code>## #include &lt;Rcpp.h&gt;
+## using namespace Rcpp;
+## 
+## // [[Rcpp::export]]
+## NumericMatrix minModRec(NumericVector x, NumericVector u) {
+##   
+##   int n = x.size();
+##   NumericMatrix res(n - 2, 4);
+##   NumericVector dxm(n - 2), dxp(n - 2), dum(n - 2), dup(n - 2), du(n - 2);
+##   
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     dxm[i - 1] = x[i] - x[i - 1];
+## 
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     dxp[i - 1] = x[i + 1] - x[i];
+##   
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     dum[i - 1] = (u[i] - u[i - 1]) / dxm[i - 1];
+## 
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     dup[i - 1] = (u[i + 1] - u[i]) / dxp[i - 1];
+##   
+##  for (int i = 0; i &lt; n - 2; ++i)
+##     du[i] = (dum[i] * dup[i] &lt; 0e0 ? 0e0 : (std::abs(dum[i]) &lt; std::abs(dup[i]) ? dum[i] : dup[i]));
+##   
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     res(i - 1, 0) = 5e-1 * (x[i] + x[i - 1]);
+## 
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     res(i - 1, 1) = 5e-1 * (x[i + 1] + x[i]);
+##   
+##     
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     res(i - 1, 2) = u[i] - du[i - 1] * 5e-1 * dxm[i - 1];
+##   
+##   for (int i = 1; i &lt; n - 1; ++i)
+##     res(i - 1, 3) = u[i] + du[i - 1] * 5e-1 * dxp[i - 1];
+##   
+##   return(res);
+##     
+## }
+## 
+## 
+## // You can include R code blocks in C++ files processed with sourceCpp
+## // (useful for testing and development). The R code will be automatically 
+## // run after the compilation.
+## //
+## 
+## /*** R
+## print(&quot;R test: &quot;)
+## minModRec(1:10, 1:10)
+## */
+</code></pre><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(Rcpp)</div><div class="line">sourceCpp(<span class="string">"minModRec.cpp"</span>)</div></pre></td></tr></table></figure>
+<pre><code>## 
+## &gt; print(&quot;R test: &quot;)
+## [1] &quot;R test: &quot;
+## 
+## &gt; minModRec(1:10, 1:10)
+##      [,1] [,2] [,3] [,4]
+## [1,]  1.5  2.5  1.5  2.5
+## [2,]  2.5  3.5  2.5  3.5
+## [3,]  3.5  4.5  3.5  4.5
+## [4,]  4.5  5.5  4.5  5.5
+## [5,]  5.5  6.5  5.5  6.5
+## [6,]  6.5  7.5  6.5  7.5
+## [7,]  7.5  8.5  7.5  8.5
+## [8,]  8.5  9.5  8.5  9.5
+</code></pre><h1 id="Implementation-in-R"><a href="#Implementation-in-R" class="headerlink" title="Implementation in R"></a>Implementation in R</h1><p>I implemented two versions in R. The main difference is in the usage of ifelse.</p>
+<p>Version 1:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">RminModRec &lt;- <span class="keyword">function</span>(x, u) &#123;</div><div class="line">  n &lt;- length(x)</div><div class="line">  rng &lt;- <span class="number">2</span>:(n - <span class="number">1</span>)</div><div class="line"></div><div class="line">  dxm &lt;- x[rng] - x[rng - <span class="number">1</span>]</div><div class="line">  dxp &lt;- x[rng + <span class="number">1</span>] - x[rng]</div><div class="line">  </div><div class="line">  dum &lt;- (u[rng] - u[rng - <span class="number">1</span>]) / dxm</div><div class="line">  dup &lt;- (u[rng + <span class="number">1</span>] - u[rng]) / dxp</div><div class="line"></div><div class="line">  du &lt;- ifelse(dum * dup &lt; <span class="number">0e0</span>, <span class="number">0e0</span>, ifelse(abs(dum) &lt; abs(dup), dum, dup))</div><div class="line"></div><div class="line">  res &lt;- array(dim=c(n - <span class="number">2</span>, <span class="number">4</span>))</div><div class="line">  </div><div class="line">  res[,<span class="number">1</span>] &lt;- <span class="number">5e-1</span> * (x[rng] + x[rng - <span class="number">1</span>])</div><div class="line">  res[,<span class="number">2</span>] &lt;- <span class="number">5e-1</span> * (x[rng + <span class="number">1</span>] + x[rng])</div><div class="line">  res[,<span class="number">3</span>] &lt;- u[rng] - du * <span class="number">5e-1</span> * dxm</div><div class="line">  res[,<span class="number">4</span>] &lt;- u[rng] + du * <span class="number">5e-1</span> * dxp</div><div class="line">  </div><div class="line">  <span class="keyword">return</span>(res)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Version 2:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">RminModRec2 &lt;- <span class="keyword">function</span>(x, u) &#123;</div><div class="line">  n &lt;- length(x)</div><div class="line">  rng &lt;- <span class="number">2</span>:(n - <span class="number">1</span>)</div><div class="line"></div><div class="line">  dxm &lt;- x[rng] - x[rng - <span class="number">1</span>]</div><div class="line">  dxp &lt;- x[rng + <span class="number">1</span>] - x[rng]</div><div class="line">  </div><div class="line">  dum &lt;- (u[rng] - u[rng - <span class="number">1</span>]) / dxm</div><div class="line">  dup &lt;- (u[rng + <span class="number">1</span>] - u[rng]) / dxp</div><div class="line"></div><div class="line">  dum2 &lt;- dum^<span class="number">2</span></div><div class="line">  dup2 &lt;- dup^<span class="number">2</span></div><div class="line">  dumdup &lt;- dum * dup</div><div class="line">  </div><div class="line">  du &lt;- dum</div><div class="line">  dmask &lt;- dum2 &gt; dup2</div><div class="line">  du[dmask] &lt;- dup[dmask]</div><div class="line">  du[dumdup &lt; <span class="number">0e0</span>] &lt;- <span class="number">0e0</span></div><div class="line">  </div><div class="line">  res &lt;- array(dim=c(n - <span class="number">2</span>, <span class="number">4</span>))</div><div class="line"></div><div class="line">  res[,<span class="number">1</span>] &lt;- <span class="number">5e-1</span> * (x[rng] + x[rng - <span class="number">1</span>])</div><div class="line">  res[,<span class="number">2</span>] &lt;- <span class="number">5e-1</span> * (x[rng + <span class="number">1</span>] + x[rng])</div><div class="line">  res[,<span class="number">3</span>] &lt;- u[rng] - du * <span class="number">5e-1</span> * dxm</div><div class="line">  res[,<span class="number">4</span>] &lt;- u[rng] + du * <span class="number">5e-1</span> * dxp</div><div class="line">  </div><div class="line">  <span class="keyword">return</span>(res)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="Create-an-initial-state"><a href="#Create-an-initial-state" class="headerlink" title="Create an initial state:"></a>Create an initial state:</h1><p>To begin, I create an initial state that consists of two constant states separated by a discontinuity:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">x &lt;- seq(<span class="number">0</span>, <span class="number">100</span>, <span class="number">10</span>)</div><div class="line">u &lt;- c(rep(<span class="number">2</span>, <span class="number">5</span>), rep(<span class="number">1</span>, <span class="number">6</span>))</div><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x = x, y = u))), points = c(<span class="literal">TRUE</span>), xlab=<span class="string">"x"</span>, ylab=<span class="string">"u"</span>, ylim=c(<span class="number">0</span>, <span class="number">2.2</span>), labels=c(<span class="string">"Initial values"</span>), legend.name = <span class="string">"Data"</span>, grid=<span class="literal">FALSE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/testMinModRec_files/figure-markdown_github/unnamed-chunk-6-1.png" alt=""></p>
+<p>Now I econstruct using both C++ and R routines and plot the maximum differences (should be zero):</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">recCpp &lt;- minModRec(x, u)</div><div class="line">recR &lt;- RminModRec(x, u)</div><div class="line">recR2 &lt;- RminModRec(x, u)</div><div class="line">max(abs(recCpp - recR))</div></pre></td></tr></table></figure>
+<pre><code>## [1] 0
+</code></pre><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">max(abs(recCpp - recR2))</div></pre></td></tr></table></figure>
+<pre><code>## [1] 0
+</code></pre><p>Now I plot the reconstructed values:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x = x, y = u), pltptsgg.get.curve(x = recCpp[,<span class="number">1</span>], y = recCpp[,<span class="number">3</span>]), pltptsgg.get.curve(x = recCpp[,<span class="number">2</span>], y = recCpp[,<span class="number">4</span>]))), points = c(<span class="literal">TRUE</span>, <span class="literal">TRUE</span>, <span class="literal">TRUE</span>), xlab=<span class="string">"x"</span>, ylab=<span class="string">"u"</span>, ylim=c(<span class="number">0</span>, <span class="number">2.2</span>), labels=c(<span class="string">"initial values"</span>, <span class="string">"left"</span>, <span class="string">"right"</span>), legend.name = <span class="string">"Data"</span>, grid=<span class="literal">FALSE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/testMinModRec_files/figure-markdown_github/unnamed-chunk-8-1.png" alt=""></p>
+<h1 id="Measure-performance-using-1000-points"><a href="#Measure-performance-using-1000-points" class="headerlink" title="Measure performance using 1000 points:"></a>Measure performance using 1000 points:</h1><p>First, let’s measure the performance using 1000 points:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(microbenchmark)</div><div class="line">x &lt;- seq(<span class="number">0</span>, <span class="number">1000</span>)</div><div class="line">u &lt;- c(rep(<span class="number">2</span>, <span class="number">500</span>), rep(<span class="number">1</span>, <span class="number">501</span>))</div><div class="line">res &lt;- microbenchmark(minModRec(x, u), RminModRec(x, u), RminModRec2(x, u), times = <span class="number">1000</span>)</div><div class="line">print(res)</div></pre></td></tr></table></figure>
+<pre><code>## Unit: microseconds
+##               expr     min       lq      mean   median       uq       max
+##    minModRec(x, u)  18.963  23.1115  58.34623  26.7740  35.6405  2590.464
+##   RminModRec(x, u) 275.205 315.0175 694.84095 369.2865 478.7540 77591.049
+##  RminModRec2(x, u) 192.073 219.6845 398.18222 252.2565 317.2840 27592.042
+##  neval
+##   1000
+##   1000
+##   1000
+</code></pre><p>Plot the measurements:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">autoplot(res)</div></pre></td></tr></table></figure>
+<p><img src="/testMinModRec_files/figure-markdown_github/unnamed-chunk-10-1.png" alt=""></p>
+<p>C++ is much faster than either of R routines, and version 2 is faster than version 1.</p>
+<h1 id="Measure-performance-using-10000-points-and-random-data"><a href="#Measure-performance-using-10000-points-and-random-data" class="headerlink" title="Measure performance using 10000 points and random data:"></a>Measure performance using 10000 points and random data:</h1><p>Now we run a larger test with random initial data:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">library</span>(microbenchmark)</div><div class="line">x &lt;- seq(<span class="number">0</span>, <span class="number">10000</span>)</div><div class="line">u &lt;- runif(<span class="number">10001</span>)</div><div class="line">res &lt;- microbenchmark(minModRec(x, u), RminModRec(x, u), RminModRec2(x, u), times = <span class="number">100</span>)</div><div class="line">print(res)</div></pre></td></tr></table></figure>
+<pre><code>## Unit: microseconds
+##               expr      min       lq      mean    median        uq
+##    minModRec(x, u)  147.624  188.834  357.5853  244.3735  298.4105
+##   RminModRec(x, u) 3329.903 4987.316 8139.7837 5806.7150 6831.5135
+##  RminModRec2(x, u) 2023.073 2552.851 4399.0807 3521.3895 4171.0115
+##       max neval
+##   2252.14   100
+##  87064.53   100
+##  86612.22   100
+</code></pre><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">max(abs(recCpp - recR))</div></pre></td></tr></table></figure>
+<pre><code>## [1] 0
+</code></pre><figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">max(abs(recCpp - recR2))</div></pre></td></tr></table></figure>
+<pre><code>## [1] 0
+</code></pre><h1 id="Measure-performance-using-a-non-random-non-trivial-input"><a href="#Measure-performance-using-a-non-random-non-trivial-input" class="headerlink" title="Measure performance using a non-random, non-trivial input"></a>Measure performance using a non-random, non-trivial input</h1><p>In order to standardize the bechmarks, I generate the input data using some equation. This is how the input data looks like. The reconstruction was done using only 20 points, to better illustrate the minmod scheme. <img src="/testMinModRec_files/figure-markdown_github/unnamed-chunk-12-1.png" alt=""></p>
+<h1 id="Check-scaling"><a href="#Check-scaling" class="headerlink" title="Check scaling"></a>Check scaling</h1><p>Here I run minmod on problems with different sizes and check how the median executon time scales with the number of points:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">ns &lt;- c(<span class="number">10</span>, <span class="number">100</span>, <span class="number">500</span>, <span class="number">1000</span>, <span class="number">5000</span>, <span class="number">10000</span>, <span class="number">50000</span>, <span class="number">100000</span>)</div><div class="line">ts &lt;- c(<span class="number">10000</span>, <span class="number">1000</span>, <span class="number">1000</span>, <span class="number">1000</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>, <span class="number">100</span>)</div><div class="line"></div><div class="line">tCpp &lt;- ns</div><div class="line">tR1 &lt;- ns</div><div class="line">tR2 &lt;- ns</div><div class="line"></div><div class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:length(ns)) &#123;</div><div class="line">  x &lt;- seq(<span class="number">0</span>, <span class="number">1</span>, length.out = ns[i])</div><div class="line">  u &lt;- nrntInput(x)</div><div class="line"></div><div class="line">  rCpp &lt;- microbenchmark(minModRec(x, u), times = ts[i])</div><div class="line">  tCpp[i] &lt;- median(rCpp$time) / <span class="number">1000</span></div><div class="line">  rR1 &lt;- microbenchmark(RminModRec(x, u), times = ts[i])</div><div class="line">  tR1[i] &lt;- median(rR1$time) / <span class="number">1000</span></div><div class="line">  rR2 &lt;- microbenchmark(RminModRec2(x, u), times = ts[i])</div><div class="line">  tR2[i] &lt;- median(rR2$time) / <span class="number">1000</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>We will also use the data from an externally run Fortran implementation with the same parameters. The results are like this: <img src="/testMinModRec_files/figure-markdown_github/unnamed-chunk-14-1.png" alt=""></p>
+<p>Relative to C++: <img src="/testMinModRec_files/figure-markdown_github/unnamed-chunk-15-1.png" alt=""></p>
+<h1 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions:"></a>Conclusions:</h1><ul>
+<li>C++ is much faster than R and, at least in this test, comparable in speed to Fortran (generally a bit worse)</li>
+<li>Avoid using ifelse in R</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6v4qimx00026lrnjno6ccjm" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/08/27/A-simple-but-nontrivial-Shiny-App/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          A simple (but nontrivial) Shiny App
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/08/27/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/27/A-simple-but-nontrivial-Shiny-App/">A simple (but nontrivial) Shiny App</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/08/R-versus-C-and-Fortran/">R versus C++ (and Fortran)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Petar Mimica<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
