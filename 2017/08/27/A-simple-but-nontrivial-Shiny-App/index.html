@@ -12,12 +12,12 @@
 <meta property="og:site_name" content="Using R">
 <meta property="og:description" content="IntroductionSome time ago I put it on my todo list to learn Shiny. I report my first non-trivial app, which is useful (for me at least), and also shows what can be done after even a few hours of work.">
 <meta property="og:locale" content="English">
-<meta property="og:image" content="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/shiny1.png">
-<meta property="og:updated_time" content="2017-08-27T11:51:57.000Z">
+<meta property="og:image" content="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/2017/08/27/shiny1.png">
+<meta property="og:updated_time" content="2017-08-27T11:57:51.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="A simple (but nontrivial) Shiny App">
 <meta name="twitter:description" content="IntroductionSome time ago I put it on my todo list to learn Shiny. I report my first non-trivial app, which is useful (for me at least), and also shows what can be done after even a few hours of work.">
-<meta name="twitter:image" content="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/shiny1.png">
+<meta name="twitter:image" content="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/2017/08/27/shiny1.png">
   
     <link rel="alternate" href="/atom.xml" title="Using R" type="application/atom+xml">
   
@@ -59,9 +59,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://petarmimica.github.io"></form>
@@ -73,7 +73,7 @@
         <section id="main"><article id="post-A-simple-but-nontrivial-Shiny-App" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2017/08/27/A-simple-but-nontrivial-Shiny-App/" class="article-date">
-  <time datetime="2017-08-27T11:51:57.000Z" itemprop="datePublished">2017-08-27</time>
+  <time datetime="2017-08-27T11:57:51.000Z" itemprop="datePublished">2017-08-27</time>
 </a>
     
   </div>
@@ -101,7 +101,7 @@
 </ul>
 <p>The Shiny library is very powerful in that it allows the programmer to program <a href="https://shiny.rstudio.com/articles/reactivity-overview.html" target="_blank" rel="external">reactively</a>. What this means in practice is that a (possibly computationally very expensive) operation is only executed if the user changes one or more of the input parameters on which that operation depends. For example, the plotting routine may only be called if the user has done something that requires it to be redrawn, while another part of the UI may contain a text that only changes when the user clicks on a plot (without that plot needing to be redrawn).</p>
 <h1 id="What-I-did"><a href="#What-I-did" class="headerlink" title="What I did"></a>What I did</h1><p>I wanted to create an app that displays measurements of some baby’s mass, height and head circumference. The app would let the user select what to display, and would perform a fit to a power-law dependence between the quantity and the number of days since birth. It would also allow the user to see what the model prediction for today is, as well as for another, user-specified date. It would also allow the user to change the date up to which the data is plotted. Finally, it would allow the user to click anywhere on a chart and get the values of that point.</p>
-<p>Here is what the current version looks like: <img src="./shiny1.png" alt="Shiny1.app"></p>
+<p>Here is what the current version looks like: <img src="./2017/08/27/shiny1.png" alt="Shiny1.app"></p>
 <p>I have annotated the UI elements, as well as the points and curves on the chart.</p>
 <h1 id="How-it-was-done"><a href="#How-it-was-done" class="headerlink" title="How it was done"></a>How it was done</h1><p>I hardcoded the data (there are only 6 points, so it was much easier to do). Then I did some processing on the data to make it easier to perform fits. The first Shiny related code concerns the definition of two global variables that contain the predictions for today and for user date:</p>
 <figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Reactively bound variables that store the user selected and today estimate</span></div><div class="line">user.y &lt;- <span class="literal">NULL</span></div><div class="line">today.y &lt;- <span class="literal">NULL</span></div></pre></td></tr></table></figure>
@@ -136,7 +136,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6uohflz0000e7rn78qid69a" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6uokvbk0001farni0q8vay0" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -147,7 +147,7 @@
   
   
     <a href="/2017/08/23/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
+      <strong class="article-nav-caption">Ancien</strong>
       <div class="article-nav-title">Hello World</div>
     </a>
   
@@ -180,7 +180,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -205,7 +205,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2017 Petar Mimica<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
