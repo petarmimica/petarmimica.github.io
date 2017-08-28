@@ -56,9 +56,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://petarmimica.github.io"></form>
@@ -135,7 +135,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6wddkpp0000zcrn5vshdzji" class="article-share-link">Partager</a>
+      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6wdw8b400006grn3rfns74w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -296,7 +296,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6wddkq00003zcrnubtl9q1f" class="article-share-link">Partager</a>
+      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6wdw8bd00046grnizpswj02" class="article-share-link">Share</a>
       
       
     </footer>
@@ -451,7 +451,59 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" data-id="cj6wddkpx0002zcrn3400kuoj" class="article-share-link">Partager</a>
+      <a data-url="http://petarmimica.github.io/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" data-id="cj6wdw8ba00026grn7jz9cyjv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Avoid-unwanted-polygon-borders-in-ggplot" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/01/Avoid-unwanted-polygon-borders-in-ggplot/" class="article-date">
+  <time datetime="2016-12-01T18:00:00.000Z" itemprop="datePublished">2016-12-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/01/Avoid-unwanted-polygon-borders-in-ggplot/">Avoid unwanted polygon borders in ggplot</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="What-is-the-problem"><a href="#What-is-the-problem" class="headerlink" title="What is the problem?"></a>What is the problem?</h2><p>(I used R 3.3.2, RStudio 1.0.44 and ggplot2 2.2.0 for this post).</p>
+<p>I really like <a href="http://ggplot2.org/" target="_blank" rel="external">ggplot2</a> for making quality graphics in R. You can check <a href="pltimggg.html">my first post</a> to see what can be done to improve 2D image representation. However, while developing the code that plots data in spherical geometry I run against a problem with polygon borders being shown even when I wanted to avoid it.</p>
+<h2 id="ggplot2’s-geom-polygon-command"><a href="#ggplot2’s-geom-polygon-command" class="headerlink" title="ggplot2’s geom_polygon command"></a>ggplot2’s geom_polygon command</h2><p>In order to draw filled polygons in ggplot2 we have to provide a data frame that contains the polygon vertices and the values that are going to be used to fill it with colour. Let’s start with an example:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># include the ggplot2 package</span></div><div class="line"><span class="keyword">library</span>(ggplot2)</div><div class="line"></div><div class="line"><span class="comment"># declare the vectors containing the coordinates of the corners of four polygons.</span></div><div class="line">x.bottom.left &lt;- c(-<span class="number">1</span>, -<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">0.5</span>)</div><div class="line">x.bottom.right&lt;- c( <span class="number">0</span>,  <span class="number">0.5</span>, <span class="number">1</span>, <span class="number">1.5</span>)</div><div class="line">x.top.left    &lt;- c(-<span class="number">0.5</span>, <span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>)</div><div class="line">x.top.right   &lt;- c( <span class="number">0.5</span>, <span class="number">1</span>, <span class="number">1.5</span>, <span class="number">2</span>)</div><div class="line"></div><div class="line">y.bottom.left &lt;- c(-<span class="number">1</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>)</div><div class="line">y.bottom.right&lt;- c(-<span class="number">1</span>, <span class="number">0</span>, -<span class="number">1</span>, <span class="number">0</span>)</div><div class="line">y.top.left    &lt;- c( <span class="number">0</span>, <span class="number">1</span>,  <span class="number">0</span>, <span class="number">1</span>)</div><div class="line">y.top.right   &lt;- c( <span class="number">0</span>, <span class="number">1</span>,  <span class="number">0</span>, <span class="number">1</span>)</div><div class="line"></div><div class="line"><span class="comment"># declare a vector of values</span></div><div class="line">values &lt;- c(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)</div><div class="line"></div><div class="line"><span class="comment"># create a data frame containing values and ids</span></div><div class="line">values.df &lt;- data.frame(value = values, id = c(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>))</div><div class="line"></div><div class="line"><span class="comment"># create the x and y vectors containing the coordinates of each polygon in the correct order</span></div><div class="line">x.coords &lt;- unlist(lapply(<span class="number">1</span>:length(x.bottom.left), <span class="keyword">function</span>(i) &#123;</div><div class="line">    c(x.bottom.left[i], x.bottom.right[i], x.top.right[i], x.top.left[i])</div><div class="line">&#125;))</div><div class="line"></div><div class="line">y.coords &lt;- unlist(lapply(<span class="number">1</span>:length(y.bottom.left), <span class="keyword">function</span>(i) &#123;</div><div class="line">    c(y.bottom.left[i], y.bottom.right[i], y.top.right[i], y.top.left[i])</div><div class="line">&#125;))</div><div class="line"></div><div class="line"><span class="comment"># create a coordinates data frame</span></div><div class="line">coords.df &lt;- data.frame(id = rep(c(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>), each = <span class="number">4</span>), x = x.coords, y = y.coords)</div><div class="line"></div><div class="line"><span class="comment"># merge the data frames</span></div><div class="line">data.df &lt;- merge(values.df, coords.df, by = c(<span class="string">"id"</span>))</div><div class="line"></div><div class="line"><span class="comment"># plot</span></div><div class="line">ggplot(data = data.df, aes(x = x, y = y)) + geom_polygon(aes(fill = value, group = id), color=<span class="literal">NA</span>) + theme_classic()</div></pre></td></tr></table></figure>
+<p><img src="/polygon_files/figure-markdown_github/unnamed-chunk-1-1.png" alt=""></p>
+<p>On my Mac there is an annoying white line around each polygon. It gets worse if the number of polygons increases. Let’s automate the coordinates creation routine and plot</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># we want to plot a grid of 100 by 100 polygons</span></div><div class="line">num.x &lt;- <span class="number">100</span></div><div class="line">num.y &lt;- <span class="number">100</span></div><div class="line"></div><div class="line">x.bottom.left &lt;- rep(<span class="number">1e0</span>, num.x * num.y)</div><div class="line">y.bottom.left &lt;- x.bottom.left</div><div class="line"></div><div class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:num.x) &#123;</div><div class="line">    <span class="keyword">for</span> (j <span class="keyword">in</span> <span class="number">1</span>:num.y) &#123;</div><div class="line"> </div><div class="line">        x.bottom.left[(i - <span class="number">1</span>) * num.y + j] &lt;- -<span class="number">1</span> + <span class="number">2</span> * (i - <span class="number">1</span>) / num.x + <span class="number">1</span> * (j - <span class="number">1</span>) / num.y        </div><div class="line">        y.bottom.left[(i - <span class="number">1</span>) * num.y + j] &lt;- -<span class="number">1</span> + <span class="number">2</span> * (j - <span class="number">1</span>) / num.y          </div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">x.bottom.right &lt;- x.bottom.left + <span class="number">2</span> / num.x</div><div class="line">x.top.left &lt;- x.bottom.left + <span class="number">1</span> / num.y</div><div class="line">x.top.right &lt;- x.top.left + <span class="number">2</span> / num.x</div><div class="line">y.bottom.right &lt;- y.bottom.left</div><div class="line">y.top.left &lt;- y.bottom.left + <span class="number">2</span> / num.y</div><div class="line">y.top.right &lt;- y.bottom.right + <span class="number">2</span> / num.y</div><div class="line"></div><div class="line"><span class="comment"># declare a vector of values</span></div><div class="line">values &lt;- seq(<span class="number">1</span>:(num.x * num.y))</div><div class="line"></div><div class="line"><span class="comment"># create a data frame containing values and ids</span></div><div class="line">values.df &lt;- data.frame(value = values, id = seq(<span class="number">1</span>:(num.x*num.y)))</div><div class="line"></div><div class="line"><span class="comment"># create the x and y vectors containing the coordinates of each polygon in the correct order</span></div><div class="line">x.coords &lt;- unlist(lapply(<span class="number">1</span>:length(x.bottom.left), <span class="keyword">function</span>(i) &#123;</div><div class="line">    c(x.bottom.left[i], x.bottom.right[i], x.top.right[i], x.top.left[i])</div><div class="line">&#125;))</div><div class="line"></div><div class="line">y.coords &lt;- unlist(lapply(<span class="number">1</span>:length(y.bottom.left), <span class="keyword">function</span>(i) &#123;</div><div class="line">    c(y.bottom.left[i], y.bottom.right[i], y.top.right[i], y.top.left[i])</div><div class="line">&#125;))</div><div class="line"></div><div class="line"><span class="comment"># create a coordinates data frame</span></div><div class="line">coords.df &lt;- data.frame(id = rep(seq(<span class="number">1</span>:(num.x*num.y)), each = <span class="number">4</span>), x = x.coords, y = y.coords)</div><div class="line"></div><div class="line"><span class="comment"># merge the data frames</span></div><div class="line">data.df &lt;- merge(values.df, coords.df, by = c(<span class="string">"id"</span>))</div><div class="line"></div><div class="line"><span class="comment"># plot</span></div><div class="line">ggplot(data = data.df, aes(x = x, y = y)) + geom_polygon(aes(fill = value, group = id), color=<span class="literal">NA</span>, linetype=<span class="number">0</span>, lwd = <span class="number">0</span>) + theme_classic()</div></pre></td></tr></table></figure>
+<p><img src="/polygon_files/figure-markdown_github/unnamed-chunk-2-1.png" alt=""></p>
+<p>It looks pretty bad, the borders are covering the polygons. And this happens even though we set the line type to 0 (none) and its width to 0 as well!</p>
+<p>The solution seems to be very simple, as it turns out:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ggplot(data = data.df, aes(x = x, y = y, group = id)) + geom_polygon(aes(fill = value, color=value)) + theme_classic() + scale_fill_continuous() + scale_colour_continuous()</div></pre></td></tr></table></figure>
+<p><img src="/polygon_files/figure-markdown_github/unnamed-chunk-3-1.png" alt=""></p>
+<p>Note that now fill and colour are inside the aesthetic of the geom_polygon, and also that the scales for the colors and filling are the same (and should be the same). Here is a variant with gradients:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ggplot(data = data.df, aes(x = x, y = y, group = id)) + geom_polygon(aes(fill = value, color=value)) + theme_classic() + scale_fill_gradient(low=<span class="string">"red"</span>, high=<span class="string">"green"</span>) + scale_colour_gradient(low=<span class="string">"red"</span>, high=<span class="string">"green"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/polygon_files/figure-markdown_github/unnamed-chunk-4-1.png" alt=""></p>
+<p>This seems to solve the problem. Just make sure to use exactly the same colour palette in both scale_fill and scale_colour.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://petarmimica.github.io/2016/12/01/Avoid-unwanted-polygon-borders-in-ggplot/" data-id="cj6wdw8b800016grnkhrqq437" class="article-share-link">Share</a>
       
       
     </footer>
@@ -581,7 +633,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/" data-id="cj6wddkpv0001zcrn4kbfowpx" class="article-share-link">Partager</a>
+      <a data-url="http://petarmimica.github.io/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/" data-id="cj6wdw8bc00036grn0uxdij3t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -616,7 +668,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
@@ -630,6 +682,10 @@
         
           <li>
             <a href="/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/">Making nice 1D plots using ggplot with little effort</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/01/Avoid-unwanted-polygon-borders-in-ggplot/">Avoid unwanted polygon borders in ggplot</a>
           </li>
         
           <li>
@@ -649,7 +705,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2017 Petar Mimica<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
