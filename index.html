@@ -135,7 +135,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6wckyvv00000brn27l5aenm" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6wczayk0000nirnhnzq43fr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -296,7 +296,162 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6wckyw100010brnidzw86yz" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6wczayq0002nirnvwazfu9y" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Making-nice-1D-plots-using-ggplot-with-little-effort" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" class="article-date">
+  <time datetime="2016-12-07T17:00:21.000Z" itemprop="datePublished">2016-12-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/">Making nice 1D plots using ggplot with little effort</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>This is an R subroutine that makes it possible to make quality plots with a minimal learning curve. You do not need to learn all the ggplot2 options (right away) to produce nice figures. At the end of this document there is a full example.</p>
+<h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><p>You need to install the following packages: ggplot2. If you plan to use plotimggg to convolve the arrays, you also need to install spatialfil.</p>
+<p>A reminder: to install these packages, you can run the following code:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">install.packages(<span class="string">"ggplot2"</span>)</div></pre></td></tr></table></figure>
+<h2 id="Including-the-plotting-routine"><a href="#Including-the-plotting-routine" class="headerlink" title="Including the plotting routine"></a>Including the plotting routine</h2><p>For the time being the plotting routine is not an R package, but rather it should be included using the source function. The file can be found here: <a href="https://github.com/petarmimica/pltptsgg/blob/master/pltptsgg.R" target="_blank" rel="external">pltptsgg.R</a>. Put the file somewhere (in your working directory, for example) and include it:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">source</span>(<span class="string">"pltptsgg.R"</span>)</div></pre></td></tr></table></figure>
+<h2 id="1D-plots"><a href="#1D-plots" class="headerlink" title="1D plots"></a>1D plots</h2><h3 id="Basic-usage"><a href="#Basic-usage" class="headerlink" title="Basic usage"></a>Basic usage</h3><p>The idea is that we have one or more data series and wish to display them. Let us start with the simplest case of just one series:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># generate x</span></div><div class="line">x &lt;- seq(from = <span class="number">1</span>, to = <span class="number">10</span>, by = <span class="number">0.5</span>)</div><div class="line"></div><div class="line"><span class="comment"># compute y from x</span></div><div class="line">y &lt;- x^<span class="number">2</span></div></pre></td></tr></table></figure>
+<p>To plot using pltptsgg.plot1D routine, we need to prepare the data. Since we wish to be able to plot multiple datasets, each with possibly different number of elements, pltptsgg provides two routines to convert the raw data into something pltptsgg.plot1D can easily use. First, we need to create a data frame, either manually or using pltptsgg.get.curve:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">data.curve &lt;- pltptsgg.get.curve(x, y)</div></pre></td></tr></table></figure>
+<p>The returned variable is a two-variable data frame (a two-column table), containing the “x” and “y” columns:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">str(data.curve)</div></pre></td></tr></table></figure>
+<pre><code>## &apos;data.frame&apos;:    19 obs. of  2 variables:
+##  $ x: num  1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 ...
+##  $ y: num  1 2.25 4 6.25 9 ...
+</code></pre><p>If we were plotting more than one series, we would create curves for each of them and then use pltptsgg.get.data to create a single list. In this case we use the only curve we have:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># create the list</span></div><div class="line">data.list &lt;- pltptsgg.get.data(list(data.curve))</div><div class="line"></div><div class="line"><span class="comment"># get information about the list</span></div><div class="line">str(data.list)</div></pre></td></tr></table></figure>
+<pre><code>## List of 1
+##  $ curve01:&apos;data.frame&apos;: 19 obs. of  2 variables:
+##   ..$ x: num [1:19] 1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 ...
+##   ..$ y: num [1:19] 1 2.25 4 6.25 9 ...
+</code></pre><p>Note that pltptsgg.get.data return a list of an arbitrary number of data frames, and each data frame contains only two columns named “x” and “y”. You can use your own list instead of the one prepared by the routine, as long as the list is in this format.</p>
+<p>Now we can call the plotting routine:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(data.list)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-7-1.png" alt=""></p>
+<p>This is the default plot. If you wish to avoid storing the intermediate results, you can inline the other functions into the pltptsgg.plot1D call:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y))))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-8-1.png" alt=""></p>
+<h4 id="Plotting-two-series"><a href="#Plotting-two-series" class="headerlink" title="Plotting two series"></a>Plotting two series</h4><p>Let’s add another series to our plot:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># generate a new series</span></div><div class="line">x2 &lt;- c(<span class="number">1</span>, <span class="number">8</span>, <span class="number">9</span>)</div><div class="line">y2 &lt;- c(<span class="number">2</span>, <span class="number">16</span>, <span class="number">75</span>)</div><div class="line"></div><div class="line"><span class="comment"># generate curves</span></div><div class="line">data.curve1 &lt;- pltptsgg.get.curve(x, y)</div><div class="line">data.curve2 &lt;- pltptsgg.get.curve(x2, y2)</div><div class="line"></div><div class="line"><span class="comment"># generate data list</span></div><div class="line">data.list &lt;- pltptsgg.get.data(list(data.curve1, data.curve2))</div><div class="line"></div><div class="line"><span class="comment"># plot</span></div><div class="line">pltptsgg.plot1D(data.list)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-9-1.png" alt=""></p>
+<p>As before, we can use a single call to plot everything:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-10-1.png" alt=""></p>
+<p>Note that pltptsgg.get.data accepts a list of data frames as an argument. If you already have a data frame and it contains columns calles “x” and “y”, you can pass it directly to pltptsgg.get.data.</p>
+<h4 id="Plotting-points-instead-of-lines"><a href="#Plotting-points-instead-of-lines" class="headerlink" title="Plotting points instead of lines"></a>Plotting points instead of lines</h4><p>By default the lines are connecting the points. If we wish to plot some of the series as points, we can indicate it via the points logicalvector:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), points=c(<span class="literal">FALSE</span>, <span class="literal">TRUE</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-11-1.png" alt=""></p>
+<p>We can also change the shape type by passing the shapes vector:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), points=c(<span class="literal">FALSE</span>, <span class="literal">TRUE</span>), shapes=c(<span class="number">0</span>, <span class="number">1</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-12-1.png" alt=""></p>
+<p>Note that the first element of shapes is ignored since we are plotting lines.</p>
+<h4 id="Changing-the-line-type-width-and-colour"><a href="#Changing-the-line-type-width-and-colour" class="headerlink" title="Changing the line type, width and colour"></a>Changing the line type, width and colour</h4><p>We can change the linetypes by using the linetypes keyword:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), linetypes=c(<span class="number">2</span>, <span class="number">4</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-13-1.png" alt=""></p>
+<p>To change the width use linesizes:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), linesizes=c(<span class="number">2</span>, <span class="number">4</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-14-1.png" alt=""></p>
+<p>Similarly, the colours keyword changes colours:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), colours=c(<span class="string">"red"</span>, <span class="string">"yellow"</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-15-1.png" alt=""></p>
+<h3 id="Adjusting-legends"><a href="#Adjusting-legends" class="headerlink" title="Adjusting legends"></a>Adjusting legends</h3><p>By default, the routine labels the curves automatically: “curve01”, “curve02”, etc. We can adjust this by using labels keyword:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), labels=c(<span class="string">"Quantity 1"</span>, <span class="string">"Quantity 2"</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-16-1.png" alt=""></p>
+<p>The legend title can be changed using the legend.name keyword:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), labels=c(<span class="string">"Quantity 1"</span>, <span class="string">"Quantity 2"</span>), legend.name = <span class="string">"Quantities shown"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-17-1.png" alt=""></p>
+<h3 id="Adjusting-axes"><a href="#Adjusting-axes" class="headerlink" title="Adjusting axes"></a>Adjusting axes</h3><p>Often the axes generated by ggplot2 are good enough. Nevertheless, pltptsgg.plot1D provides a number of keywords which can be used to adjust them.</p>
+<h4 id="Axis-labels"><a href="#Axis-labels" class="headerlink" title="Axis labels"></a>Axis labels</h4><p>To change axis labels, use xlab and ylab keywords:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), xlab=<span class="string">"time"</span>, ylab=<span class="string">"space"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-18-1.png" alt=""></p>
+<h4 id="Axis-limits"><a href="#Axis-limits" class="headerlink" title="Axis limits"></a>Axis limits</h4><p>The limits can be changed using xlim and ylim keywords:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), xlim=c(<span class="number">1</span>, <span class="number">100</span>), ylim=c(-<span class="number">100</span>, <span class="number">100</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-19-1.png" alt=""></p>
+<h4 id="Axis-scale"><a href="#Axis-scale" class="headerlink" title="Axis scale"></a>Axis scale</h4><p>The scale can be changed to logarithmic using xlog and ylog keywords:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-20-1.png" alt=""></p>
+<p>In order to obtain a more traditional logarithmic plot, with minor grid lines denoting the intermediate values use major.xticks = 10 and major.yticks = 10 (see below for the explanation of these keywords):</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>, major.xticks = <span class="number">10</span>, major.yticks = <span class="number">10</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-21-1.png" alt=""></p>
+<h4 id="Axis-number-format"><a href="#Axis-number-format" class="headerlink" title="Axis number format"></a>Axis number format</h4><p>Keeping the logarithmic plot example, we may wish to change the number format to powers of 10:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>, major.xticks = <span class="number">10</span>, major.yticks = <span class="number">10</span>, xformat = <span class="string">"pow"</span>, yformat = <span class="string">"pow"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-22-1.png" alt=""></p>
+<p>Another option, apart from the defualt one, is the scientific. Reverting to the linear scale for this example:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), xformat = <span class="string">"sci"</span>, yformat = <span class="string">"sci"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-23-1.png" alt=""></p>
+<p>The number of digits in this format can be changed using xdigits and ydigits keywords:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), xformat = <span class="string">"sci"</span>, yformat = <span class="string">"sci"</span>, xdigits = <span class="number">2</span>, ydigits = <span class="number">6</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-24-1.png" alt=""></p>
+<h4 id="Axis-ticks"><a href="#Axis-ticks" class="headerlink" title="Axis ticks"></a>Axis ticks</h4><p>We can also change the spacing of the major and minor ticks. For example, we can set the major ticks (the points where numbers will appear) to be multiples of 5 for the x axis and multiples of 50 for the y axis using major.xticks and major.yticks:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), major.xticks = <span class="number">5</span>, major.yticks = <span class="number">50</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-25-1.png" alt=""></p>
+<p>To set the spacing of the intermediate lines we can use minor.xticks and minor.yticks. Let’s add them every 1 unit in x and every 10 units in y:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), major.xticks = <span class="number">5</span>, major.yticks = <span class="number">50</span>, minor.xticks = <span class="number">1</span>, minor.yticks = <span class="number">10</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-26-1.png" alt=""></p>
+<p>For the logarithmic plots it is recommended to use a power of 10 for major ticks and to set minor ticks to 1 (or to omit that keyword, since 1 is the default value). Here are few examples. The “standard” case:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), major.xticks = <span class="number">10</span>, major.yticks = <span class="number">10</span>, xlim=c(<span class="number">0.9</span>, <span class="number">1001</span>), ylim = c(<span class="number">0.9</span>, <span class="number">1001</span>), xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>, xformat=<span class="string">"pow"</span>, yformat=<span class="string">"pow"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-27-1.png" alt=""></p>
+<p>Plotting every 100 instead of 10:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), major.xticks = <span class="number">100</span>, major.yticks = <span class="number">100</span>, xlim=c(<span class="number">0.9</span>, <span class="number">1001</span>), ylim = c(<span class="number">0.9</span>, <span class="number">1001</span>), xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>, xformat=<span class="string">"pow"</span>, yformat=<span class="string">"pow"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-28-1.png" alt=""></p>
+<p>Changing the number of minor ticks:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), major.xticks = <span class="number">10</span>, major.yticks = <span class="number">10</span>, xlim=c(<span class="number">0.9</span>, <span class="number">1001</span>), ylim = c(<span class="number">0.9</span>, <span class="number">1001</span>), xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>, xformat=<span class="string">"pow"</span>, yformat=<span class="string">"pow"</span>, minor.xticks = <span class="number">2</span>, minor.yticks = <span class="number">2</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-29-1.png" alt=""></p>
+<h3 id="Disabling-grid"><a href="#Disabling-grid" class="headerlink" title="Disabling grid"></a>Disabling grid</h3><p>By default, ggplot2 plots a grid, but it can be disabled by setting grid = FALSE. This is my preferred option:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), grid = <span class="literal">FALSE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-30-1.png" alt=""></p>
+<p>The logarithmic plot also looks nice without a grid:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), major.xticks = <span class="number">10</span>, major.yticks = <span class="number">10</span>, xlim=c(<span class="number">0.9</span>, <span class="number">1001</span>), ylim = c(<span class="number">0.9</span>, <span class="number">1001</span>), xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>, xformat=<span class="string">"pow"</span>, yformat=<span class="string">"pow"</span>, grid=<span class="literal">FALSE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-31-1.png" alt=""></p>
+<h3 id="Using-custom-theme"><a href="#Using-custom-theme" class="headerlink" title="Using custom theme"></a>Using custom theme</h3><p>If you have your own preferred theme, you can replace the one used by pltptsgg.plot1D by using the theme keyword. This sets the theme to theme_classic():</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(pltptsgg.get.curve(x, y), pltptsgg.get.curve(x2, y2))), theme = theme_classic())</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-32-1.png" alt=""></p>
+<h2 id="Full-example"><a href="#Full-example" class="headerlink" title="Full example"></a>Full example</h2><p>This is a full documented example that you can copy and adapt to your needs. It uses the Cars93 built-in dataset plots miles per gallon in the city and on the highway as a function of car price.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># load plotting libraries and routines</span></div><div class="line"><span class="keyword">library</span>(ggplot2)</div><div class="line"><span class="keyword">source</span>(<span class="string">"pltptsgg.R"</span>)</div><div class="line"></div><div class="line"><span class="comment"># use built-in MASS library</span></div><div class="line"><span class="keyword">library</span>(MASS)</div><div class="line"></div><div class="line"><span class="comment"># create the data curves</span></div><div class="line">city.curve &lt;- pltptsgg.get.curve(Cars93$Price * <span class="number">1000</span>, Cars93$MPG.city)</div><div class="line">highway.curve &lt;- pltptsgg.get.curve(Cars93$Price * <span class="number">1000</span>, Cars93$MPG.highway)</div><div class="line"></div><div class="line"><span class="comment"># create the data list</span></div><div class="line">data.list &lt;- pltptsgg.get.data(list(city.curve, highway.curve))</div><div class="line"></div><div class="line"><span class="comment"># plot</span></div><div class="line">pltptsgg.plot1D(data.list, xlab=<span class="string">"Price (USD)"</span>, ylab = <span class="string">"Miles per gallon"</span>, labels = c(<span class="string">"City"</span>, <span class="string">"Highway"</span>), legend.name = <span class="string">"Driving location"</span>, grid=<span class="literal">FALSE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-33-1.png" alt=""></p>
+<h2 id="Advanced-plotting"><a href="#Advanced-plotting" class="headerlink" title="Advanced plotting"></a>Advanced plotting</h2><h3 id="Errorbars"><a href="#Errorbars" class="headerlink" title="Errorbars"></a>Errorbars</h3><p>It is possible to specify both horizontal and vertical errorbars. Let us go back to our original dataset and add random errors to x and y:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># generate x</span></div><div class="line">x &lt;- seq(from = <span class="number">1</span>, to = <span class="number">10</span>, by = <span class="number">2</span>)</div><div class="line"></div><div class="line"><span class="comment"># compute y from x</span></div><div class="line">y &lt;- x^<span class="number">2</span></div><div class="line"></div><div class="line"><span class="comment"># add errors</span></div><div class="line">xerr &lt;- runif(length(x), min = -<span class="number">1</span>, max = <span class="number">1</span>)</div><div class="line">yerr &lt;- runif(length(y), min = -<span class="number">8</span>, max = <span class="number">8</span>)</div></pre></td></tr></table></figure>
+<p>Now we can use pltptsgg.get.curve to generate a dataset including errors:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">data.curve &lt;- pltptsgg.get.curve(x, y, xerr = xerr, yerr = yerr)</div></pre></td></tr></table></figure>
+<p>Then we call the plotting routine as usual (here plotted with points instead of lines):</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(data.curve)), point=c(<span class="literal">TRUE</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-36-1.png" alt=""></p>
+<p>We can change the length of the errorbars using errorbar.width and errorbar.height keywords:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(data.curve)), point=c(<span class="literal">TRUE</span>), errorbar.width = <span class="number">2</span>, errorbar.height = <span class="number">10</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-37-1.png" alt=""></p>
+<p>Typically only vertical errorbars are present:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">data.curve &lt;- pltptsgg.get.curve(x, y, yerr = yerr)</div><div class="line">pltptsgg.plot1D(pltptsgg.get.data(list(data.curve)), point=c(<span class="literal">TRUE</span>))</div></pre></td></tr></table></figure>
+<p><img src="/pltptsgg_files/figure-markdown_github/unnamed-chunk-38-1.png" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://petarmimica.github.io/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" data-id="cj6wczayo0001nirnb78unmwj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -323,7 +478,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
     </div>
   </div>
 
@@ -341,6 +496,10 @@
         
           <li>
             <a href="/2017/08/08/R-versus-C-and-Fortran/">R versus C++ (and Fortran)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/">Making nice 1D plots using ggplot with little effort</a>
           </li>
         
       </ul>
