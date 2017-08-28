@@ -56,9 +56,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://petarmimica.github.io"></form>
@@ -135,7 +135,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6wczayk0000nirnhnzq43fr" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6wddkpp0000zcrn5vshdzji" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -296,7 +296,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6wczayq0002nirnvwazfu9y" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6wddkq00003zcrnubtl9q1f" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -451,7 +451,137 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" data-id="cj6wczayo0001nirnb78unmwj" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" data-id="cj6wddkpx0002zcrn3400kuoj" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Making-nice-2D-plots-using-ggplot-with-little-effort" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/" class="article-date">
+  <time datetime="2016-12-01T17:17:42.000Z" itemprop="datePublished">2016-12-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/">Making nice 2D plots using ggplot with little effort</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Prerequisites"><a href="#Prerequisites" class="headerlink" title="Prerequisites"></a>Prerequisites</h2><p>You need to install the following packages: ggplot2, reshape2 and RColorBrewer. If you plan to use plotimggg to convolve the arrays, you also need to install spatialfil.</p>
+<p>A reminder: to install these packages, you can run the following code:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">install.packages(<span class="string">"ggplot2"</span>)</div><div class="line">install.packages(<span class="string">"reshape2"</span>)</div><div class="line">install.packages(<span class="string">"RColorBrewer"</span>)</div><div class="line">install.packages(<span class="string">"spatialfil"</span>)</div></pre></td></tr></table></figure>
+<h2 id="Including-the-plotting-routine"><a href="#Including-the-plotting-routine" class="headerlink" title="Including the plotting routine"></a>Including the plotting routine</h2><p>For the time being the plotting routine is not an R package, but rather it should be included using the source function. The file can be found here: <a href="https://github.com/petarmimica/pltimggg/blob/master/pltimggg.R" target="_blank" rel="external">pltimggg.R</a>. Put the file somewhere (in your working directory, for example) and include it:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">source</span>(<span class="string">"pltimggg.R"</span>)</div></pre></td></tr></table></figure>
+<h2 id="2D-plots"><a href="#2D-plots" class="headerlink" title="2D plots"></a>2D plots</h2><h3 id="Basic-usage"><a href="#Basic-usage" class="headerlink" title="Basic usage"></a>Basic usage</h3><p>For it to make any sense to use pltimggg, you need to have a 2D array and the corresponding vectors corresponding to each axis. In this example we will generate a 100x100 array with axes spanning the interval [1, 11].</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># define array dimensions</span></div><div class="line">nx &lt;- <span class="number">100</span></div><div class="line">ny &lt;- <span class="number">100</span></div><div class="line"></div><div class="line"><span class="comment"># axes limits</span></div><div class="line">xlim = c(<span class="number">1e0</span>, <span class="number">11e0</span>)</div><div class="line">ylim = c(<span class="number">1e0</span>, <span class="number">11e0</span>)</div><div class="line"></div><div class="line"><span class="comment"># compute axes</span></div><div class="line">x &lt;- (<span class="number">0</span> : (nx - <span class="number">1</span>)) * (xlim[<span class="number">2</span>] - xlim[<span class="number">1</span>]) / (nx - <span class="number">1</span>) + xlim[<span class="number">1</span>]</div><div class="line">y &lt;- (<span class="number">0</span> : (ny - <span class="number">1</span>)) * (ylim[<span class="number">2</span>] - ylim[<span class="number">1</span>]) / (ny - <span class="number">1</span>) + ylim[<span class="number">1</span>]</div><div class="line"></div><div class="line"><span class="comment"># declare array</span></div><div class="line">img &lt;- array(<span class="number">1e0</span>, c(nx, ny))</div><div class="line"></div><div class="line"><span class="comment"># fill array with random numbers in a certain interval</span></div><div class="line">img &lt;- <span class="number">10</span>^(apply(img, c(<span class="number">1</span>, <span class="number">2</span>), <span class="keyword">function</span>(x) &#123;rnorm(<span class="number">1</span>, <span class="number">0.5</span>, <span class="number">0.3</span>) &#125;) * <span class="number">2e0</span>) * <span class="number">1e-15</span></div></pre></td></tr></table></figure>
+<p>Now we can try to plot the image using the default settings:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-4-1.png" alt=""></p>
+<h3 id="Parameters"><a href="#Parameters" class="headerlink" title="Parameters"></a>Parameters</h3><p>Now we review the parameters that can be passed to pltimggg.plot2D.</p>
+<h4 id="zlog-logarithmic-scale-for-the-values-default-zlog-FALSE"><a href="#zlog-logarithmic-scale-for-the-values-default-zlog-FALSE" class="headerlink" title="zlog: logarithmic scale for the values, default zlog = FALSE"></a>zlog: logarithmic scale for the values, default zlog = FALSE</h4><p>To plot the image in logarithmic scale set zlog to TRUE:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-5-1.png" alt=""></p>
+<h4 id="legend-direction-colourbar-direction-default-legend-direction-“horizontal”"><a href="#legend-direction-colourbar-direction-default-legend-direction-“horizontal”" class="headerlink" title="legend.direction: colourbar direction, default legend.direction = “horizontal”"></a>legend.direction: colourbar direction, default legend.direction = “horizontal”</h4><p>To plot the colourbar on the right set legend.direction to “vertical”:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-6-1.png" alt=""></p>
+<h4 id="xlab-ylab-and-zlab-axes-and-colourbar-labels-default-“x”-“y”-and-“z”-respectively"><a href="#xlab-ylab-and-zlab-axes-and-colourbar-labels-default-“x”-“y”-and-“z”-respectively" class="headerlink" title="xlab, ylab and zlab: axes and colourbar labels, default: “x”, “y” and “z”, respectively"></a>xlab, ylab and zlab: axes and colourbar labels, default: “x”, “y” and “z”, respectively</h4><p>The labels of the axes and the colourbar can be changed by giving the appropriate values to xlab, ylab and zlab:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, xlab=<span class="string">"x (degrees)"</span>, ylab=<span class="string">"y (degrees)"</span>, zlab=expression(paste(<span class="string">"intensity ["</span>~<span class="string">"erg"</span>~<span class="string">"s"</span>^<span class="string">"-1"</span>~<span class="string">"cm"</span>^<span class="string">"-2"</span>~<span class="string">"arcmin"</span>^<span class="string">"-2"</span>~<span class="string">"]"</span>)))</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-7-1.png" alt=""></p>
+<h4 id="xlog-ylog-logarithmic-scaling-of-the-coordinate-axes-default-FALSE"><a href="#xlog-ylog-logarithmic-scaling-of-the-coordinate-axes-default-FALSE" class="headerlink" title="xlog, ylog: logarithmic scaling of the coordinate axes, default: FALSE"></a>xlog, ylog: logarithmic scaling of the coordinate axes, default: FALSE</h4><p>We can also plot in the logarithmic scale by setting xlog and/or ylog to TRUE.</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, xlog = <span class="literal">TRUE</span>, ylog = <span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-8-1.png" alt=""></p>
+<h4 id="zlinformat-colourscale-values-format-default-zlinformat-FALSE"><a href="#zlinformat-colourscale-values-format-default-zlinformat-FALSE" class="headerlink" title="zlinformat: colourscale values format, default zlinformat = FALSE"></a>zlinformat: colourscale values format, default zlinformat = FALSE</h4><p>When the image is plotted in logarithmic scale, by default the colourbar values are printed as powers of ten. If we want them to be printed in the scientific notation we set zlinformat to TRUE:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, zlinformat=<span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-9-1.png" alt=""></p>
+<h4 id="xlinformat-ylinformat-axes-values-format-default-FALSE"><a href="#xlinformat-ylinformat-axes-values-format-default-FALSE" class="headerlink" title="xlinformat, ylinformat: axes values format, default FALSE"></a>xlinformat, ylinformat: axes values format, default FALSE</h4><p>Similar to zlinformat, but for axes. By default nothing special is done with the axes, but it can be changed:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, xlinformat=<span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-10-1.png" alt=""></p>
+<h4 id="xdigits-ydigits-and-zdigits-number-of-digits-in-the-scientific-notation-for-the-colourbar-default-1"><a href="#xdigits-ydigits-and-zdigits-number-of-digits-in-the-scientific-notation-for-the-colourbar-default-1" class="headerlink" title="xdigits, ydigits and zdigits: number of digits in the scientific notation for the colourbar, default 1"></a>xdigits, ydigits and zdigits: number of digits in the scientific notation for the colourbar, default 1</h4><p>By default only one digit is printed in the scientific notation. To use 2 set xdigits, ydigits or zdigits to 2 (note that this only has an effect when xlinformat, ylinformat or zlinformat = TRUE or when plotting in a linear scale [xlog, ylog or zlog = FALSE]):</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, zlinformat=<span class="literal">TRUE</span>, zdigits = <span class="number">2</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-11-1.png" alt=""></p>
+<p>The parameter has no effect when the powers of ten are used:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, zdigits = <span class="number">2</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-12-1.png" alt=""></p>
+<p>An example with the x-axis:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, xdigits = <span class="number">2</span>, xlinformat = <span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-13-1.png" alt=""></p>
+<h4 id="aspect-preserve-aspect-ratio-default-aspect-TRUE"><a href="#aspect-preserve-aspect-ratio-default-aspect-TRUE" class="headerlink" title="aspect: preserve aspect ratio, default aspect = TRUE"></a>aspect: preserve aspect ratio, default aspect = TRUE</h4><p>By default, the coordinates have an equal length scale in x and y directions. This can cause problems in semilogarithmic plots:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, xlog = <span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-14-1.png" alt=""></p>
+<p>A remedy is to set aspect to FALSE:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, xlog = <span class="literal">TRUE</span>, aspect = <span class="literal">FALSE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-15-1.png" alt=""></p>
+<h4 id="zbarwidth-and-zbarheight-colourbar-width-and-height-default-zbarwidth-20-zbarheight-1"><a href="#zbarwidth-and-zbarheight-colourbar-width-and-height-default-zbarwidth-20-zbarheight-1" class="headerlink" title="zbarwidth and zbarheight: colourbar width and height, default: zbarwidth = 20, zbarheight = 1"></a>zbarwidth and zbarheight: colourbar width and height, default: zbarwidth = 20, zbarheight = 1</h4><p>By default the colourbar is horizontal, its length is 20 (zbarwidth = 20) and its thickness is 1 (zbarheight = 1). If legend.direction is set to “vertical” these values are interchanged by the routine itself.</p>
+<p>To make the horizontal colourbar longer and thicker set zbarwidth to 25 and zbarheight to 2:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, zbarwidth=<span class="number">25</span>, zbarheight = <span class="number">2</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-16-1.png" alt=""></p>
+<p>For the vertical bar remember that zbarwidth and zbarheight have the opposite meaning than in the horizontal case. To reduce the length and thickness set zbarheight to 18 and zbarwidth to 0.5:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, zbarheight = <span class="number">18</span>, zbarwidth = <span class="number">0.5</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-17-1.png" alt=""></p>
+<h4 id="ztitleposition-colourbar-title-position-default-ztitleposition-“top”"><a href="#ztitleposition-colourbar-title-position-default-ztitleposition-“top”" class="headerlink" title="ztitleposition: colourbar title position, default ztitleposition = “top”"></a>ztitleposition: colourbar title position, default ztitleposition = “top”</h4><p>By default, the position of the colourbar title is above the colourbar in the horizontal case and to the right in the vertical case. To plot the title below the vertical colourbar set ztitleposition to “bottom”:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, ztitleposition = <span class="string">"bottom"</span>, zlab=<span class="string">"values"</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-18-1.png" alt=""></p>
+<p>Note that the title is rotated by 90 degrees, which is not something we may necessarily want here. The next parameter can help.</p>
+<h4 id="zitleorientation-colourbar-title-orientation-angle-default-ztitleorientation-0"><a href="#zitleorientation-colourbar-title-orientation-angle-default-ztitleorientation-0" class="headerlink" title="zitleorientation: colourbar title orientation angle, default ztitleorientation = 0"></a>zitleorientation: colourbar title orientation angle, default ztitleorientation = 0</h4><p>By default, the title is printed horizonally (ztitleorientation = 0) when the colourbar is horizontal, and vertically (ztitleorientation = 90) when it is vertical (this is automatically changed by the routine when legend.direction is set to “vertical”). In the previous example we may want to print the title horizontally and set ztitleorientation to 0:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, ztitleposition = <span class="string">"bottom"</span>, zlab=<span class="string">"values"</span>, ztitleorientation = <span class="number">0</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-19-1.png" alt=""></p>
+<h4 id="ztitlehjust-and-ztitlevjust-title-horizontal-and-vertical-justification-default-0-5-both"><a href="#ztitlehjust-and-ztitlevjust-title-horizontal-and-vertical-justification-default-0-5-both" class="headerlink" title="ztitlehjust and ztitlevjust: title horizontal and vertical justification, default: 0.5 both"></a>ztitlehjust and ztitlevjust: title horizontal and vertical justification, default: 0.5 both</h4><p>By default, the title is centered both horizontally and vertically (ztitlehjust = 0.5 and ztitlevjust = 0.5). To justify left (bottom), set ztitlehjust the value to 0, and for the right (right and top) justification set it to 1.</p>
+<p>Move the title to the bottom:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, zlab=<span class="string">"values"</span>, ztitlehjust = <span class="number">0</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-20-1.png" alt=""></p>
+<p>Move the title to the right:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, zlab=<span class="string">"values"</span>, ztitlehjust = <span class="number">1</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-21-1.png" alt=""></p>
+<h4 id="colours-colourscale-to-be-used-default-internally-defined-rainbow"><a href="#colours-colourscale-to-be-used-default-internally-defined-rainbow" class="headerlink" title="colours: colourscale to be used, default: internally defined rainbow"></a>colours: colourscale to be used, default: internally defined rainbow</h4><p>There is a rainbow colourscale defined internally. You can replace it by your own colourscale. For example, to use grayscale you first generate the colours useing e.g. colorRampPalette and then pass the result to plotimggg.plot2D:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">myPalette &lt;- colorRampPalette(c(<span class="string">"black"</span>, <span class="string">"white"</span>))(<span class="number">100</span>)</div><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, colours = myPalette)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-22-1.png" alt=""></p>
+<p>You can also combine the palettes. Let’s add another two palettes, usefull when particular ranges of values should be emphasized:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">myPalette &lt;- c(colorRampPalette(c(<span class="string">"black"</span>, <span class="string">"white"</span>))(<span class="number">100</span>), colorRampPalette(c(<span class="string">"red"</span>, <span class="string">"blue"</span>))(<span class="number">100</span>), colorRampPalette(c(<span class="string">"magenta"</span>, <span class="string">"orange"</span>))(<span class="number">100</span>))</div><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, colours = myPalette)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-23-1.png" alt=""></p>
+<p>“Interesting” plots can be generated by shuffling the colours (not the use of rbind() instead of c(), also white has been replaced by green):</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">myPalette &lt;- rbind(colorRampPalette(c(<span class="string">"black"</span>, <span class="string">"green"</span>))(<span class="number">100</span>), colorRampPalette(c(<span class="string">"green"</span>, <span class="string">"red"</span>))(<span class="number">100</span>), colorRampPalette(c(<span class="string">"red"</span>, <span class="string">"blue"</span>))(<span class="number">100</span>))</div><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, colours = myPalette)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-24-1.png" alt=""></p>
+<h4 id="theme-ggplot-theme-to-be-used-default-internally-defined-theme"><a href="#theme-ggplot-theme-to-be-used-default-internally-defined-theme" class="headerlink" title="theme: ggplot theme to be used, default: internally defined theme"></a>theme: ggplot theme to be used, default: internally defined theme</h4><p>plotimggg.plot2D defines a reasonable black and white theme with some adjustments for fonts. You can supply your own theme instead. For exmple, to use the minimal theme set theme to theme_minimal():</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, theme = theme_minimal())</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-25-1.png" alt=""></p>
+<p>More information can be obtained by reading the ggplot documentation. Or you can copy the definition of “mytheme” from the plotimggg.R and create your own custom theme.</p>
+<h4 id="conv-kernel-image-convolution"><a href="#conv-kernel-image-convolution" class="headerlink" title="conv.kernel: image convolution"></a>conv.kernel: image convolution</h4><p>If we want to perform a simple convolution of the image with a Gaussian kernel we have to provide the kernel width (FWHM of the Gaussian) in the units in which axes are measured. In our examples the axes go from 1 to 11. The following command convolves the image shown in the previous example with a Gaussin kernel 0.6 units wide:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(x, y, img, zlog=<span class="literal">TRUE</span>, legend.direction = <span class="string">"vertical"</span>, conv.kernel = <span class="number">0.6</span>)</div></pre></td></tr></table></figure>
+<pre><code>## [1] &quot;Convolving with sigma =  0.6  (pixels =  5.94 )&quot;
+</code></pre><p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-26-1.png" alt=""></p>
+<p>Note that the convolution is currently performed on the original 2D image array, and thus only makes sense when applied to Cartesian geometry. Hopefully in the future a more general convolution will be implemented.</p>
+<h3 id="Spherical-coordinates"><a href="#Spherical-coordinates" class="headerlink" title="Spherical coordinates"></a>Spherical coordinates</h3><p>We can also provide the data in spherical coordinates. The routine creates an internal representation in the form of polygons and calls the ggplot geom_polygon() routines. This is slowe, but it provides reasonable results.</p>
+<p>First, we create an array with spherical coordinates:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># define array dimensions</span></div><div class="line">snx &lt;- <span class="number">100</span></div><div class="line">sny &lt;- <span class="number">400</span></div><div class="line"></div><div class="line"><span class="comment"># axes limits</span></div><div class="line">sxlim = c(<span class="number">1e0</span>, <span class="number">2e0</span>)</div><div class="line">sylim = c(<span class="number">0e0</span>, <span class="number">2</span> * pi)</div><div class="line"></div><div class="line"><span class="comment"># compute axes</span></div><div class="line">sx &lt;- (<span class="number">0</span> : (snx - <span class="number">1</span>)) * (sxlim[<span class="number">2</span>] - sxlim[<span class="number">1</span>]) / snx + sxlim[<span class="number">1</span>]</div><div class="line">sy &lt;- (<span class="number">0</span> : (sny - <span class="number">1</span>)) * (sylim[<span class="number">2</span>] - sylim[<span class="number">1</span>]) / sny + sylim[<span class="number">1</span>]</div><div class="line"></div><div class="line"><span class="comment"># declare array</span></div><div class="line">simg &lt;- array(<span class="number">1e0</span>, c(snx, sny))</div><div class="line"></div><div class="line"><span class="comment"># fill array with random numbers in a certain interval</span></div><div class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:snx) &#123;</div><div class="line">    <span class="keyword">for</span> (j <span class="keyword">in</span> <span class="number">1</span>:sny) &#123;</div><div class="line">        simg[i, j] = (rnorm(<span class="number">1</span>, <span class="number">1e1</span>, <span class="number">0.3</span>))^<span class="number">2</span> * <span class="number">1e10</span> * (cos(sy[j])^<span class="number">2</span> + <span class="number">1e0</span>)/ (sx[i]^<span class="number">2</span>)</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Now we call the routine with the parameter igeom set to 2:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(sx, sy, simg, legend.direction = <span class="string">"vertical"</span>, igeom = <span class="number">2</span>, zlog=<span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-28-1.png" alt=""></p>
+<p>We can also plot just a small wedge:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(sx, sy[<span class="number">250</span>:<span class="number">270</span>], simg[,<span class="number">250</span>:<span class="number">270</span>], legend.direction = <span class="string">"vertical"</span>, igeom = <span class="number">2</span>, zlog=<span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-29-1.png" alt=""> Or we can also plot everything but that small wedge:</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pltimggg.plot2D(sx, sy[-(<span class="number">250</span>:<span class="number">270</span>)], simg[,-(<span class="number">250</span>:<span class="number">270</span>)], legend.direction = <span class="string">"vertical"</span>, igeom = <span class="number">2</span>, zlog=<span class="literal">TRUE</span>)</div></pre></td></tr></table></figure>
+<p><img src="/pltimggg_files/figure-markdown_github/unnamed-chunk-30-1.png" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://petarmimica.github.io/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/" data-id="cj6wddkpv0001zcrn4kbfowpx" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -486,7 +616,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -502,6 +632,10 @@
             <a href="/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/">Making nice 1D plots using ggplot with little effort</a>
           </li>
         
+          <li>
+            <a href="/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/">Making nice 2D plots using ggplot with little effort</a>
+          </li>
+        
       </ul>
     </div>
   </div>
@@ -515,7 +649,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2017 Petar Mimica<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
