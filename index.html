@@ -71,8 +71,8 @@
   
     <article id="post-A-simple-but-nontrivial-Shiny-App" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2017/08/27/A-simple-but-nontrivial-Shiny-App/" class="article-date">
-  <time datetime="2017-08-27T11:57:51.000Z" itemprop="datePublished">2017-08-27</time>
+    <a href="/2017/08/28/A-simple-but-nontrivial-Shiny-App/" class="article-date">
+  <time datetime="2017-08-28T16:42:00.000Z" itemprop="datePublished">2017-08-28</time>
 </a>
     
   </div>
@@ -83,7 +83,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/27/A-simple-but-nontrivial-Shiny-App/">A simple (but nontrivial) Shiny App</a>
+      <a class="article-title" href="/2017/08/28/A-simple-but-nontrivial-Shiny-App/">A simple (but nontrivial) Shiny App</a>
     </h1>
   
 
@@ -100,7 +100,7 @@
 </ul>
 <p>The Shiny library is very powerful in that it allows the programmer to program <a href="https://shiny.rstudio.com/articles/reactivity-overview.html" target="_blank" rel="external">reactively</a>. What this means in practice is that a (possibly computationally very expensive) operation is only executed if the user changes one or more of the input parameters on which that operation depends. For example, the plotting routine may only be called if the user has done something that requires it to be redrawn, while another part of the UI may contain a text that only changes when the user clicks on a plot (without that plot needing to be redrawn).</p>
 <h1 id="What-I-did"><a href="#What-I-did" class="headerlink" title="What I did"></a>What I did</h1><p>I wanted to create an app that displays measurements of some baby’s mass, height and head circumference. The app would let the user select what to display, and would perform a fit to a power-law dependence between the quantity and the number of days since birth. It would also allow the user to see what the model prediction for today is, as well as for another, user-specified date. It would also allow the user to change the date up to which the data is plotted. Finally, it would allow the user to click anywhere on a chart and get the values of that point.</p>
-<p>Here is what the current version looks like: <img src="./2017/08/27/shiny1.png" alt="Shiny1.app"></p>
+<p>Here is what the current version looks like: <img src="/images/shiny1.png" alt="Shiny1.app"></p>
 <p>I have annotated the UI elements, as well as the points and curves on the chart.</p>
 <h1 id="How-it-was-done"><a href="#How-it-was-done" class="headerlink" title="How it was done"></a>How it was done</h1><p>I hardcoded the data (there are only 6 points, so it was much easier to do). Then I did some processing on the data to make it easier to perform fits. The first Shiny related code concerns the definition of two global variables that contain the predictions for today and for user date:</p>
 <figure class="highlight r"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Reactively bound variables that store the user selected and today estimate</span></div><div class="line">user.y &lt;- <span class="literal">NULL</span></div><div class="line">today.y &lt;- <span class="literal">NULL</span></div></pre></td></tr></table></figure>
@@ -135,7 +135,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/27/A-simple-but-nontrivial-Shiny-App/" data-id="cj6wdw8b400006grn3rfns74w" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/08/28/A-simple-but-nontrivial-Shiny-App/" data-id="cj6we66be0000lprnffnu23p4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -296,7 +296,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6wdw8bd00046grnizpswj02" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/08/08/R-versus-C-and-Fortran/" data-id="cj6we66bs0004lprnf3lyxz03" class="article-share-link">Share</a>
       
       
     </footer>
@@ -451,7 +451,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" data-id="cj6wdw8ba00026grn7jz9cyjv" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/" data-id="cj6we66bq0003lprnfufp2vle" class="article-share-link">Share</a>
       
       
     </footer>
@@ -503,7 +503,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2016/12/01/Avoid-unwanted-polygon-borders-in-ggplot/" data-id="cj6wdw8b800016grnkhrqq437" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2016/12/01/Avoid-unwanted-polygon-borders-in-ggplot/" data-id="cj6we66bk0001lprnea5666w9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -633,7 +633,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/" data-id="cj6wdw8bc00036grn0uxdij3t" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2016/12/01/Making-nice-2D-plots-using-ggplot-with-little-effort/" data-id="cj6we66bo0002lprnb5jzw2fv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -673,7 +673,7 @@
       <ul>
         
           <li>
-            <a href="/2017/08/27/A-simple-but-nontrivial-Shiny-App/">A simple (but nontrivial) Shiny App</a>
+            <a href="/2017/08/28/A-simple-but-nontrivial-Shiny-App/">A simple (but nontrivial) Shiny App</a>
           </li>
         
           <li>
