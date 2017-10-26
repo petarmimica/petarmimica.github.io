@@ -14,13 +14,13 @@
 <meta property="og:locale" content="English">
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png">
-<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png">
-<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png">
-<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png">
-<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png">
-<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png">
-<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png">
-<meta property="og:updated_time" content="2017-10-26T11:03:29.968Z">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png">
+<meta property="og:updated_time" content="2017-10-26T11:04:25.093Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="A simple status&#x2F;progress bar with time estimator">
 <meta name="twitter:description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
@@ -277,7 +277,7 @@ for (i in 1:length(intervals)) {
 Sys.time()
 
 ## [1] &quot;2017-10-26 12:44:54 CEST&quot;
-</code></pre><p>Again, the method performs very well after the first couple of entries.<br>Let’s look at the errors:<br><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png" alt=""> No<br>surprises here. The quadratic estimator outperforms the rest.</p>
+</code></pre><p>Again, the method performs very well after the first couple of entries.<br>Let’s look at the errors:<br><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png" alt=""> No<br>surprises here. The quadratic estimator outperforms the rest.</p>
 <h1 id="Simplification-and-generalization"><a href="#Simplification-and-generalization" class="headerlink" title="Simplification and generalization"></a>Simplification and generalization</h1><p>Of course, given that the Fortran module was developed on the fly, with<br>estimators added as need arose, it is no surprise that it seems messy<br>and confused. Also, since R is much better suited for things such as<br>fitting, I can replace the whole suite of estimators with a routine that<br>uses polynomial estimator in R. Furthermore, it is possible that we<br>encounter a task that is slow initially, but speeds up subsequently.<br>Therefore, I implemented the following estimators:</p>
 <ul>
 <li>polynomial</li>
@@ -366,12 +366,12 @@ Sys.time()
     return(exp(pdf$times[1]))
 }
 </code></pre><h2 id="Testing-the-new-scheme"><a href="#Testing-the-new-scheme" class="headerlink" title="Testing the new scheme"></a>Testing the new scheme</h2><p>Let’s repeat the tests and perform some new ones.</p>
-<h1 id="Linear-time"><a href="#Linear-time" class="headerlink" title="Linear time"></a>Linear time</h1><p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png" alt=""></p>
+<h1 id="Linear-time"><a href="#Linear-time" class="headerlink" title="Linear time"></a>Linear time</h1><p><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png" alt=""></p>
 <p>As expected, both methods perform very well.</p>
-<h1 id="Quadratic-time"><a href="#Quadratic-time" class="headerlink" title="Quadratic time"></a>Quadratic time</h1><p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png" alt=""></p>
+<h1 id="Quadratic-time"><a href="#Quadratic-time" class="headerlink" title="Quadratic time"></a>Quadratic time</h1><p><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png" alt=""></p>
 <p>Again, and as expected, both methods perform very well.</p>
 <h1 id="Cubic-time"><a href="#Cubic-time" class="headerlink" title="Cubic time"></a>Cubic time</h1><p>Let’s try a test with 20 time intervals where the time grows as the<br>third power.</p>
-<p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png" alt=""></p>
+<p><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png" alt=""></p>
 <p>Looks good for the parabolic estimator. Let’s see it live in action:</p>
 <pre><code>## [1] &quot;2017-10-26 12:44:56 CEST&quot;
 
@@ -419,7 +419,7 @@ Sys.time()
 
 ## [1] &quot;2017-10-26 12:45:56 CEST&quot;
 </code></pre><h1 id="Square-root-time"><a href="#Square-root-time" class="headerlink" title="Square-root time"></a>Square-root time</h1><p>Let’s try a test with 20 time intervals where the time grows as the<br>square root.</p>
-<p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png" alt=""></p>
+<p><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png" alt=""></p>
 <p>Looks good for the parabolic estimator and the polynomial estimator<br>after some time. Let’s see it live in action:</p>
 <pre><code>## [1] &quot;2017-10-26 12:45:56 CEST&quot;
 
@@ -467,7 +467,7 @@ Sys.time()
 
 ## [1] &quot;2017-10-26 12:46:57 CEST&quot;
 </code></pre><h1 id="1-exp-time"><a href="#1-exp-time" class="headerlink" title="1-exp time"></a>1-exp time</h1><p>Let’s try a test with 20 time intervals where the time grows as the 1 -<br>exp(-5*frac). This is a case where most of the work is done initially.</p>
-<p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png" alt=""></p>
+<p><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png" alt=""></p>
 <p>Both estimators do a good job after some time, but that may not be very<br>useful, since most of the calculation is spent in the early part, where<br>the estimators overestimate the time of completion.</p>
 <pre><code>## [1] &quot;2017-10-26 12:46:57 CEST&quot;
 
@@ -518,7 +518,7 @@ Sys.time()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" data-id="cj98d1wrn0003crsrzn4jxsfd" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" data-id="cj98d33bt0001d6sr4uecig3f" class="article-share-link">Share</a>
       
       
     </footer>
