@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>A simple status/progress bar with time estimator | Using R</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A simple status&#x2F;progress bar with time estimator">
+<meta property="og:url" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/index.html">
+<meta property="og:site_name" content="Using R">
+<meta property="og:description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
+<meta property="og:locale" content="English">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files//figure-markdown_strict/unnamed-chunk-8-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png">
+<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png">
+<meta property="og:updated_time" content="2017-10-26T10:00:10.436Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="A simple status&#x2F;progress bar with time estimator">
+<meta name="twitter:description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
+<meta name="twitter:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Using R" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Using R</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">(for data analysis and visualization)</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://petarmimica.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-A-simple-status-progress-bar-with-time-estimator" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" class="article-date">
+  <time datetime="2017-10-26T10:00:00.000Z" itemprop="datePublished">2017-10-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      A simple status/progress bar with time estimator
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Recently I had to perform some heavy post-processing of the results of a<br>simulation I am performing. One of the things I had to do was create<br>complex plots of different variables. Since I needed to have some idea<br>about when the job would finish, I decided to port a Fortran module I<br>have been using for several years to do just that. The result is an<br>animated (in console/terminal, at least) status bar in R which looks<br>something like this:</p>
+<p><code>======&gt;                                                     | Processing snapshot: 00081 (12%) ETA: 2017-10-25 16:07:00</code></p>
+<h2 id="History"><a href="#History" class="headerlink" title="History"></a>History</h2><p>A few years ago I was leading <a href="https://arxiv.org/abs/1501.00361" target="_blank" rel="external">a complex<br>project</a> trying to <a href="https://arxiv.org/abs/1603.05832" target="_blank" rel="external">explain the<br>astrophysical source Swift J1644</a> and<br>also participated heavily in a project attempting to understand the <a href="https://arxiv.org/abs/1605.08437" target="_blank" rel="external">the<br>broader consequences</a> of our<br>conclusions about Swift J1644.</p>
+<p>One of the technical challenges is that I had to perform a large number<br>of simulations on a machine shared with other users. The simulations<br>were performed in parallel and their performance depended heavily on<br>what the other users were and were not doing. Still, I wanted to have<br>some inkling about when each simulation was supposed to finish.</p>
+<p>Since the code was written in Fortran, I started writing a module to<br>take care of that task. First, I had to write a module that properly<br>dealt with system time. You can download that module from<br><a href="https://github.com/petarmimica/timers_f" target="_blank" rel="external">https://github.com/petarmimica/timers_f</a>. Fortunately, all this is<br>nicely dealt with in R with built-in routines and <code>lubridate</code> package.<br>Next, I wrote a module that has to offer the following functionality:</p>
+<ol>
+<li>allow the user to log the progress of some task</li>
+<li>estimate the time of completion</li>
+<li>return the predictions in a nice format</li>
+</ol>
+<p>Clearly, the last item is easily dealt with using the <code>timers_f</code>, but<br>the first two had to be implemented. In my implementation a data type is<br>defined that contains several vectors. One of the vectors are all logged<br>times, and another vector contains the corresponding fraction of work<br>done. This data is then fed to a few estimator routines that construct a<br>model to try to predict at what time the job would reach some level of<br>completion. Whenever a new entry was added by the user, the estimators<br>would predict the time at which that particular value of job completion<br>should have been reached using the previous data. Then each algorithm<br>could be graded by some method (I chose a sum of squares of deviations<br>for all data points, but one can use many other metrics). Then each<br>estimator would make the prediction for when the job completion would<br>reach 100%, and then the final prediction would be computed by using a<br>weighted average of all estimators.</p>
+<p>I experimented with several estimators, but in the end I settled on four<br>(in reality two, but with varying parameters): * a linear fit of all<br>measurements * a linear fit of (at most) the last five measurements *<br>a linear prediction using only the last measurement * a quadratic<br>prediction using only the last measurement</p>
+<p>Although I am using two different codes (a CFD simulation and a<br>relativistic raytracing code), and although I am using them on different<br>machines, performing both parallel and sequential calculations and using<br>both shared and distribured memories, the combination of these four<br>estimators always gave satisfactory results. That is why I decided to<br>implement this in R.</p>
+<h2 id="Introducing-estatusbar"><a href="#Introducing-estatusbar" class="headerlink" title="Introducing estatusbar"></a>Introducing estatusbar</h2><p>The package that implements the abovementioned functionality can be<br>found here: <a href="https://github.com/petarmimica/estatusbar" target="_blank" rel="external">https://github.com/petarmimica/estatusbar</a>. We can easily<br>test it. Assume that we are going to log the time after each 10% of the<br>task has been completed, but the time between each entry is a random<br>number between 0 and 5 seconds (uniform distribution).</p>
+<pre><code>est &lt;- estatusbar$new()
+for (i in 1:10) {
+  Sys.sleep(5 * runif(1))
+  est$add(i / 10)
+  est$display()
+}
+
+## 
+
+|===&gt;                                    | (10%) ETA: 2017-10-26 10:55:43
+
+|=======&gt;                                | (20%) ETA: 2017-10-26 10:56:05
+
+|===========&gt;                            | (30%) ETA: 2017-10-26 10:55:55
+
+|===============&gt;                        | (40%) ETA: 2017-10-26 10:55:51
+
+|===================&gt;                    | (50%) ETA: 2017-10-26 10:55:49
+
+|=======================&gt;                | (60%) ETA: 2017-10-26 10:55:58
+
+|===========================&gt;            | (70%) ETA: 2017-10-26 10:56:20
+
+|===============================&gt;        | (80%) ETA: 2017-10-26 10:56:05
+
+|===================================&gt;    | (90%) ETA: 2017-10-26 10:55:56
+
+|=======================================&gt;| (100%) ETA: 2017-10-26 10:56:03
+
+Sys.time()
+
+## [1] &quot;2017-10-26 10:56:04 CEST&quot;
+</code></pre><p>I printed the system time after the task has been completed. This is a<br>pretty adverse test, but it seems that the routine was able to handle it<br>and the estimated final time of completion was close to the final one<br>after 50% of the task has been completed.</p>
+<h2 id="Testing-the-estimators"><a href="#Testing-the-estimators" class="headerlink" title="Testing the estimators"></a>Testing the estimators</h2><p>Let’s test the estimators for different kinds of tasks. We will generate<br>the test data so that there are 20 entries, but the fractions are spaced<br>randomly. Then we will use different models for the execution time.</p>
+<p>The intervals are generated:</p>
+<pre><code>intervals &lt;- runif(20)
+intervals &lt;- intervals / sum(intervals) # normalize
+cintervals &lt;- cumsum(intervals)
+</code></pre><h2 id="Constant-time"><a href="#Constant-time" class="headerlink" title="Constant time"></a>Constant time</h2><p>In this test we assume that the time increases linearly with the<br>fraction of work done. Let’s assume that the total time it takes for the<br>task to finish is 60 seconds.</p>
+<pre><code>times.lin &lt;- intervals
+times.lin &lt;- 60 * times.lin / sum(times.lin)
+</code></pre><p>We can now test the estimators:</p>
+<pre><code>Sys.time() # start
+
+## [1] &quot;2017-10-26 10:56:04 CEST&quot;
+
+est.lin &lt;- estatusbar$new()
+for (i in 1:length(intervals)) {
+  Sys.sleep(times.lin[i])
+  est.lin$add(cintervals[i])
+  est.lin$display()
+}
+
+## 
+
+|===&gt;                                    | (10%) ETA: 2017-10-26 10:56:04
+
+|=====&gt;                                  | (15%) ETA: 2017-10-26 10:57:04
+
+|=====&gt;                                  | (17%) ETA: 2017-10-26 10:57:04
+
+|========&gt;                               | (22%) ETA: 2017-10-26 10:57:05
+
+|==========&gt;                             | (27%) ETA: 2017-10-26 10:57:05
+
+|==============&gt;                         | (39%) ETA: 2017-10-26 10:57:04
+
+|===============&gt;                        | (40%) ETA: 2017-10-26 10:57:04
+
+|===============&gt;                        | (41%) ETA: 2017-10-26 10:57:04
+
+|===============&gt;                        | (41%) ETA: 2017-10-26 10:57:07
+
+|===================&gt;                    | (52%) ETA: 2017-10-26 10:57:21
+
+|======================&gt;                 | (59%) ETA: 2017-10-26 10:57:03
+
+|=======================&gt;                | (62%) ETA: 2017-10-26 10:57:04
+
+|========================&gt;               | (63%) ETA: 2017-10-26 10:57:04
+
+|========================&gt;               | (64%) ETA: 2017-10-26 10:57:05
+
+|========================&gt;               | (64%) ETA: 2017-10-26 10:57:06
+
+|============================&gt;           | (72%) ETA: 2017-10-26 10:57:07
+
+|================================&gt;       | (84%) ETA: 2017-10-26 10:57:04
+
+|===================================&gt;    | (90%) ETA: 2017-10-26 10:57:05
+
+|=====================================&gt;  | (95%) ETA: 2017-10-26 10:57:05
+
+|=======================================&gt;| (100%) ETA: 2017-10-26 10:57:05
+
+Sys.time()
+
+## [1] &quot;2017-10-26 10:57:05 CEST&quot;
+</code></pre><p>It seems that after the first two entries the linear estimators dominate<br>and predict correctly the completion time despite the irregular nature<br>of the subsequent data. Let’s look into this in a bit more detail, by<br>plotting the estmates for the final time as entries are added.<br><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png" alt=""> As can be<br>seen, all linear models perform perfectly, while the quadratic one does<br>not (as expected). Let’s look at the linear models only:<br><img src="estatusbar_files//figure-markdown_strict/unnamed-chunk-8-1.png" alt=""> ##<br>Quadratic time</p>
+<p>In this test we assume that the time increases quadratically with the<br>fraction of work done.</p>
+<pre><code>intervals &lt;- runif(20)
+intervals &lt;- intervals / sum(intervals) # normalize
+cintervals &lt;- cumsum(intervals)
+ctimes.sq &lt;- cintervals^2
+times.sq &lt;- ctimes.sq
+times.sq[2:length(times.sq)] &lt;- times.sq[2:length(times.sq)] - times.sq[1:(length(times.sq)-1)]
+times.sq &lt;- 60 * times.sq / sum(times.sq)
+
+Sys.time() # start
+
+## [1] &quot;2017-10-26 10:57:08 CEST&quot;
+
+est.sq &lt;- estatusbar$new()
+for (i in 1:length(intervals)) {
+  Sys.sleep(times.sq[i])
+  est.sq$add(cintervals[i])
+  est.sq$display()
+}
+
+## 
+
+|=&gt;                                      | (05%) ETA: 2017-10-26 10:57:08
+
+|==&gt;                                     | (08%) ETA: 2017-10-26 10:57:12
+
+|===&gt;                                    | (12%) ETA: 2017-10-26 10:57:40
+
+|====&gt;                                   | (14%) ETA: 2017-10-26 10:58:15
+
+|=====&gt;                                  | (15%) ETA: 2017-10-26 10:58:34
+
+|========&gt;                               | (22%) ETA: 2017-10-26 10:57:47
+
+|============&gt;                           | (34%) ETA: 2017-10-26 10:57:57
+
+|==============&gt;                         | (38%) ETA: 2017-10-26 10:58:07
+
+|==================&gt;                     | (48%) ETA: 2017-10-26 10:58:10
+
+|====================&gt;                   | (54%) ETA: 2017-10-26 10:58:09
+
+|======================&gt;                 | (58%) ETA: 2017-10-26 10:58:08
+
+|======================&gt;                 | (59%) ETA: 2017-10-26 10:58:09
+
+|=========================&gt;              | (67%) ETA: 2017-10-26 10:58:09
+
+|============================&gt;           | (74%) ETA: 2017-10-26 10:58:08
+
+|============================&gt;           | (74%) ETA: 2017-10-26 10:58:08
+
+|=============================&gt;          | (77%) ETA: 2017-10-26 10:58:09
+
+|==================================&gt;     | (87%) ETA: 2017-10-26 10:58:09
+
+|==================================&gt;     | (89%) ETA: 2017-10-26 10:58:09
+
+|=====================================&gt;  | (95%) ETA: 2017-10-26 10:58:08
+
+|=======================================&gt;| (100%) ETA: 2017-10-26 10:58:09
+
+Sys.time()
+
+## [1] &quot;2017-10-26 10:58:09 CEST&quot;
+</code></pre><p>Again, the method performs very well after the first couple of entries.<br>Let’s look at the errors:<br><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png" alt=""> No<br>surprises here. The quadratic estimator outperforms the rest.</p>
+<h1 id="Simplification-and-generalization"><a href="#Simplification-and-generalization" class="headerlink" title="Simplification and generalization"></a>Simplification and generalization</h1><p>Of course, given that the Fortran module was developed on the fly, with<br>estimators added as need arose, it is no surprise that it seems messy<br>and confused. Also, since R is much better suited for things such as<br>fitting, I can replace the whole suite of estimators with a routine that<br>uses polynomial estimator in R. Furthermore, it is possible that we<br>encounter a task that is slow initially, but speeds up subsequently.<br>Therefore, I implemented the following estimators:</p>
+<ul>
+<li>polynomial</li>
+<li>log-parabolic (fallback to polynomial if not enough points)</li>
+</ul>
+<p>All this will be used on a window (i.e., a small number of recent<br>entries). The window size can be controlled by the user, and can even<br>encompass all data.</p>
+<p>Here is an implementation of the polynomial fitting routine:</p>
+<pre><code>estatusbar.polynomial &lt;- function(private, frac, win) {
+
+    num.entries &lt;- length(private$fracs)
+    realwin &lt;- min(c(win, num.entries)) # the real window may be smaller than win
+
+    # check if we can use the parabola or have to fallback to linear fit
+    if (realwin &lt; 4) {
+      par &lt;- FALSE
+    } else {
+      par &lt;- TRUE
+    }
+
+    # create a data frame to perform regression
+    df &lt;- data.frame(fracs = private$fracs[(num.entries - realwin + 1):(num.entries)], times = private$measured[(num.entries - realwin + 1):(num.entries)])
+
+    # regression
+    if (par) {
+      fit &lt;- lm(times ~ fracs + I(fracs^2), data = df)
+    } else {
+      fit &lt;- lm(times ~ fracs, data = df)
+    }
+
+    # create a data frame for predicting
+    pdf &lt;- data.frame(fracs = c(frac))
+
+    # predict the time at frac
+    pdf$times &lt;- predict(fit, pdf)
+
+    return(pdf$times[1])
+}
+</code></pre><p>And here is the log-parabolic fitting routine with a fallback to the<br>previous one if the first point cannot be avoided (because both values<br>are zero):</p>
+<pre><code>estatusbar.log &lt;- function(private, frac, win) {
+
+    num.entries &lt;- length(private$fracs)
+    realwin &lt;- min(c(win, num.entries)) # the real window may be smaller than win
+
+    # fallback to estatusbar.polynomial if there are not enough points
+    if (realwin &lt; 3) {
+      return(estatusbar.polynomial(private, frac, win))
+    }
+
+    realwin &lt;- realwin - 1
+
+    # check if we can use the parabola or have to fallback to linear fit
+    if (realwin &lt; 4) {
+      par &lt;- FALSE
+    } else {
+      par &lt;- TRUE
+    }
+
+    # ln(y) = A + B * ln(x) + C * ln(x)^2
+
+    # create a data frame to perform regression
+    df &lt;- data.frame(fracs = log(private$fracs[(num.entries - realwin + 1):(num.entries)]), times = log(private$measured[(num.entries - realwin + 1):(num.entries)]))
+
+    # regression
+    if (par) {
+      fit &lt;- lm(times ~ fracs + I(fracs^2), data = df)
+    } else {
+      fit &lt;- lm(times ~ fracs, data = df)
+    }
+
+    # create a data frame for predicting
+    pdf &lt;- data.frame(fracs = log(c(frac)))
+
+    # predict the time at frac
+    pdf$times &lt;- predict(fit, pdf)
+
+    return(exp(pdf$times[1]))
+}
+</code></pre><h2 id="Testing-the-new-scheme"><a href="#Testing-the-new-scheme" class="headerlink" title="Testing the new scheme"></a>Testing the new scheme</h2><p>Let’s repeat the tests and perform some new ones.</p>
+<h1 id="Linear-time"><a href="#Linear-time" class="headerlink" title="Linear time"></a>Linear time</h1><p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png" alt=""></p>
+<p>As expected, both methods perform very well.</p>
+<h1 id="Quadratic-time"><a href="#Quadratic-time" class="headerlink" title="Quadratic time"></a>Quadratic time</h1><p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png" alt=""></p>
+<p>Again, and as expected, both methods perform very well.</p>
+<h1 id="Cubic-time"><a href="#Cubic-time" class="headerlink" title="Cubic time"></a>Cubic time</h1><p>Let’s try a test with 20 time intervals where the time grows as the<br>third power.</p>
+<p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png" alt=""></p>
+<p>Looks good for the parabolic estimator. Let’s see it live in action:</p>
+<pre><code>## [1] &quot;2017-10-26 10:58:12 CEST&quot;
+
+## 
+
+|&gt;                                       | (02%) ETA: 2017-10-26 10:58:12
+
+|==&gt;                                     | (08%) ETA: 2017-10-26 10:58:12
+
+|===&gt;                                    | (10%) ETA: 2017-10-26 10:58:13
+
+|======&gt;                                 | (17%) ETA: 2017-10-26 10:58:18
+
+|======&gt;                                 | (18%) ETA: 2017-10-26 11:00:37
+
+|==========&gt;                             | (28%) ETA: 2017-10-26 10:58:26
+
+|===========&gt;                            | (31%) ETA: 2017-10-26 10:58:53
+
+|============&gt;                           | (34%) ETA: 2017-10-26 10:58:47
+
+|=============&gt;                          | (35%) ETA: 2017-10-26 10:59:03
+
+|=============&gt;                          | (36%) ETA: 2017-10-26 10:59:08
+
+|=================&gt;                      | (46%) ETA: 2017-10-26 11:00:49
+
+|==================&gt;                     | (49%) ETA: 2017-10-26 10:58:55
+
+|=====================&gt;                  | (57%) ETA: 2017-10-26 10:59:01
+
+|=======================&gt;                | (62%) ETA: 2017-10-26 10:59:04
+
+|===========================&gt;            | (71%) ETA: 2017-10-26 10:59:05
+
+|=============================&gt;          | (77%) ETA: 2017-10-26 10:59:09
+
+|===============================&gt;        | (80%) ETA: 2017-10-26 10:59:10
+
+|================================&gt;       | (83%) ETA: 2017-10-26 10:59:12
+
+|====================================&gt;   | (92%) ETA: 2017-10-26 10:59:12
+
+|=======================================&gt;| (100%) ETA: 2017-10-26 10:59:12
+
+## [1] &quot;2017-10-26 10:59:12 CEST&quot;
+</code></pre><h1 id="Square-root-time"><a href="#Square-root-time" class="headerlink" title="Square-root time"></a>Square-root time</h1><p>Let’s try a test with 20 time intervals where the time grows as the<br>square root.</p>
+<p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png" alt=""></p>
+<p>Looks good for the parabolic estimator and the polynomial estimator<br>after some time. Let’s see it live in action:</p>
+<pre><code>## [1] &quot;2017-10-26 10:59:13 CEST&quot;
+
+## 
+
+|&gt;                                        | (02%) ETA: 2017-10-26 10:59:13
+
+|&gt;                                       | (03%) ETA: 2017-10-26 11:05:52
+
+|===&gt;                                    | (11%) ETA: 2017-10-26 11:02:28
+
+|====&gt;                                   | (13%) ETA: 2017-10-26 11:00:15
+
+|=====&gt;                                  | (15%) ETA: 2017-10-26 11:00:16
+
+|========&gt;                               | (23%) ETA: 2017-10-26 11:00:18
+
+|===========&gt;                            | (30%) ETA: 2017-10-26 11:00:11
+
+|=============&gt;                          | (35%) ETA: 2017-10-26 11:00:12
+
+|================&gt;                       | (43%) ETA: 2017-10-26 11:00:14
+
+|=================&gt;                      | (45%) ETA: 2017-10-26 11:00:13
+
+|==================&gt;                     | (48%) ETA: 2017-10-26 11:00:13
+
+|=====================&gt;                  | (55%) ETA: 2017-10-26 11:00:15
+
+|=======================&gt;                | (60%) ETA: 2017-10-26 11:00:13
+
+|==========================&gt;             | (67%) ETA: 2017-10-26 11:00:13
+
+|============================&gt;           | (74%) ETA: 2017-10-26 11:00:13
+
+|================================&gt;       | (83%) ETA: 2017-10-26 11:00:13
+
+|==================================&gt;     | (88%) ETA: 2017-10-26 11:00:14
+
+|===================================&gt;    | (90%) ETA: 2017-10-26 11:00:14
+
+|====================================&gt;   | (93%) ETA: 2017-10-26 11:00:14
+
+|=======================================&gt;| (100%) ETA: 2017-10-26 11:00:14
+
+## [1] &quot;2017-10-26 11:00:14 CEST&quot;
+</code></pre><h1 id="1-exp-time"><a href="#1-exp-time" class="headerlink" title="1-exp time"></a>1-exp time</h1><p>Let’s try a test with 20 time intervals where the time grows as the 1 -<br>exp(-5*frac). This is a case where most of the work is done initially.</p>
+<p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png" alt=""></p>
+<p>Both estimators do a good job after some time, but that may not be very<br>useful, since most of the calculation is spent in the early part, where<br>the estimators overestimate the time of completion.</p>
+<pre><code>## [1] &quot;2017-10-26 11:00:15 CEST&quot;
+
+## 
+
+|==&gt;                                     | (07%) ETA: 2017-10-26 11:00:15
+
+|====&gt;                                   | (14%) ETA: 2017-10-26 11:04:26
+
+|=====&gt;                                  | (16%) ETA: 2017-10-26 11:03:10
+
+|======&gt;                                 | (17%) ETA: 2017-10-26 11:03:01
+
+|=======&gt;                                | (21%) ETA: 2017-10-26 11:02:31
+
+|==========&gt;                             | (29%) ETA: 2017-10-26 11:02:00
+
+|===========&gt;                            | (31%) ETA: 2017-10-26 11:01:42
+
+|==============&gt;                         | (37%) ETA: 2017-10-26 11:01:40
+
+|==============&gt;                         | (39%) ETA: 2017-10-26 11:01:14
+
+|===============&gt;                        | (40%) ETA: 2017-10-26 11:01:10
+
+|==================&gt;                     | (49%) ETA: 2017-10-26 11:01:15
+
+|==================&gt;                     | (49%) ETA: 2017-10-26 11:01:12
+
+|======================&gt;                 | (58%) ETA: 2017-10-26 11:01:14
+
+|=======================&gt;                | (61%) ETA: 2017-10-26 11:01:15
+
+|==========================&gt;             | (68%) ETA: 2017-10-26 11:01:15
+
+|============================&gt;           | (73%) ETA: 2017-10-26 11:01:15
+
+|==============================&gt;         | (78%) ETA: 2017-10-26 11:01:16
+
+|=================================&gt;      | (85%) ETA: 2017-10-26 11:01:16
+
+|===================================&gt;    | (92%) ETA: 2017-10-26 11:01:16
+
+|=======================================&gt;| (100%) ETA: 2017-10-26 11:01:16
+
+## [1] &quot;2017-10-26 11:01:16 CEST&quot;
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" data-id="cj98auhpo0001ohsrz13g6wtl" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2017/08/13/A-simple-but-nontrivial-Shiny-App/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">A simple (but nontrivial) Shiny App</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">October 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">August 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/10/26/A-simple-status-progress-bar-with-time-estimator/">A simple status/progress bar with time estimator</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/13/A-simple-but-nontrivial-Shiny-App/">A simple (but nontrivial) Shiny App</a>
+          </li>
+        
+          <li>
+            <a href="/2017/08/08/R-versus-C-and-Fortran/">R versus C++ (and Fortran)</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/07/Making-nice-1D-plots-using-ggplot-with-little-effort/">Making nice 1D plots using ggplot with little effort</a>
+          </li>
+        
+          <li>
+            <a href="/2016/12/01/Avoid-unwanted-polygon-borders-in-ggplot/">Avoid unwanted polygon borders in ggplot</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 Petar Mimica<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
