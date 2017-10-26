@@ -12,7 +12,7 @@
 <meta property="og:site_name" content="Using R">
 <meta property="og:description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
 <meta property="og:locale" content="English">
-<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png">
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png">
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png">
@@ -20,11 +20,11 @@
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png">
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png">
 <meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png">
-<meta property="og:updated_time" content="2017-10-26T11:02:44.922Z">
+<meta property="og:updated_time" content="2017-10-26T11:03:29.968Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="A simple status&#x2F;progress bar with time estimator">
 <meta name="twitter:description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
-<meta name="twitter:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
+<meta name="twitter:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
   
     <link rel="alternate" href="/atom.xml" title="Using R" type="application/atom+xml">
   
@@ -211,7 +211,7 @@ for (i in 1:length(intervals)) {
 Sys.time()
 
 ## [1] &quot;2017-10-26 12:43:51 CEST&quot;
-</code></pre><p>It seems that after the first two entries the linear estimators dominate<br>and predict correctly the completion time despite the irregular nature<br>of the subsequent data. Let’s look into this in a bit more detail, by<br>plotting the estmates for the final time as entries are addped.<br><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png" alt=""> As can be<br>seen, all linear models perform perfectly, while the quadratic one does<br>not (as expected). Let’s look at the linear models only:<br><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png" alt=""> ##<br>Quadratic time</p>
+</code></pre><p>It seems that after the first two entries the linear estimators dominate<br>and predict correctly the completion time despite the irregular nature<br>of the subsequent data. Let’s look into this in a bit more detail, by<br>plotting the estmates for the final time as entries are addped.<br><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png" alt=""> As can be<br>seen, all linear models perform perfectly, while the quadratic one does<br>not (as expected). Let’s look at the linear models only:<br><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png" alt=""> ##<br>Quadratic time</p>
 <p>In this test we assume that the time increases quadratically with the<br>fraction of work done.</p>
 <pre><code>intervals &lt;- runif(20)
 intervals &lt;- intervals / sum(intervals) # normalize
@@ -518,7 +518,7 @@ Sys.time()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" data-id="cj98d0zwo0000cbsrfupk0flt" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" data-id="cj98d1wrn0003crsrzn4jxsfd" class="article-share-link">Share</a>
       
       
     </footer>
