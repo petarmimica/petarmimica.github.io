@@ -12,19 +12,19 @@
 <meta property="og:site_name" content="Using R">
 <meta property="og:description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
 <meta property="og:locale" content="English">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png">
-<meta property="og:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png">
-<meta property="og:updated_time" content="2017-10-26T10:51:55.962Z">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png">
+<meta property="og:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png">
+<meta property="og:updated_time" content="2017-10-26T11:02:44.922Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="A simple status&#x2F;progress bar with time estimator">
 <meta name="twitter:description" content="Recently I had to perform some heavy post-processing of the results of asimulation I am performing. One of the things I had to do was createcomplex plots of different variables. Since I needed to have">
-<meta name="twitter:image" content="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
+<meta name="twitter:image" content="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png">
   
     <link rel="alternate" href="/atom.xml" title="Using R" type="application/atom+xml">
   
@@ -211,7 +211,7 @@ for (i in 1:length(intervals)) {
 Sys.time()
 
 ## [1] &quot;2017-10-26 12:43:51 CEST&quot;
-</code></pre><p>It seems that after the first two entries the linear estimators dominate<br>and predict correctly the completion time despite the irregular nature<br>of the subsequent data. Let’s look into this in a bit more detail, by<br>plotting the estmates for the final time as entries are addped.<br><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png" alt=""> As can be<br>seen, all linear models perform perfectly, while the quadratic one does<br>not (as expected). Let’s look at the linear models only:<br><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png" alt=""> ##<br>Quadratic time</p>
+</code></pre><p>It seems that after the first two entries the linear estimators dominate<br>and predict correctly the completion time despite the irregular nature<br>of the subsequent data. Let’s look into this in a bit more detail, by<br>plotting the estmates for the final time as entries are addped.<br><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-7-1.png" alt=""> As can be<br>seen, all linear models perform perfectly, while the quadratic one does<br>not (as expected). Let’s look at the linear models only:<br><img src="https://petarmimica.github.io/estatusbar_files/figure-markdown_strict/unnamed-chunk-8-1.png" alt=""> ##<br>Quadratic time</p>
 <p>In this test we assume that the time increases quadratically with the<br>fraction of work done.</p>
 <pre><code>intervals &lt;- runif(20)
 intervals &lt;- intervals / sum(intervals) # normalize
@@ -277,7 +277,7 @@ for (i in 1:length(intervals)) {
 Sys.time()
 
 ## [1] &quot;2017-10-26 12:44:54 CEST&quot;
-</code></pre><p>Again, the method performs very well after the first couple of entries.<br>Let’s look at the errors:<br><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png" alt=""> No<br>surprises here. The quadratic estimator outperforms the rest.</p>
+</code></pre><p>Again, the method performs very well after the first couple of entries.<br>Let’s look at the errors:<br><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-10-1.png" alt=""> No<br>surprises here. The quadratic estimator outperforms the rest.</p>
 <h1 id="Simplification-and-generalization"><a href="#Simplification-and-generalization" class="headerlink" title="Simplification and generalization"></a>Simplification and generalization</h1><p>Of course, given that the Fortran module was developed on the fly, with<br>estimators added as need arose, it is no surprise that it seems messy<br>and confused. Also, since R is much better suited for things such as<br>fitting, I can replace the whole suite of estimators with a routine that<br>uses polynomial estimator in R. Furthermore, it is possible that we<br>encounter a task that is slow initially, but speeds up subsequently.<br>Therefore, I implemented the following estimators:</p>
 <ul>
 <li>polynomial</li>
@@ -366,12 +366,12 @@ Sys.time()
     return(exp(pdf$times[1]))
 }
 </code></pre><h2 id="Testing-the-new-scheme"><a href="#Testing-the-new-scheme" class="headerlink" title="Testing the new scheme"></a>Testing the new scheme</h2><p>Let’s repeat the tests and perform some new ones.</p>
-<h1 id="Linear-time"><a href="#Linear-time" class="headerlink" title="Linear time"></a>Linear time</h1><p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png" alt=""></p>
+<h1 id="Linear-time"><a href="#Linear-time" class="headerlink" title="Linear time"></a>Linear time</h1><p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-13-1.png" alt=""></p>
 <p>As expected, both methods perform very well.</p>
-<h1 id="Quadratic-time"><a href="#Quadratic-time" class="headerlink" title="Quadratic time"></a>Quadratic time</h1><p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png" alt=""></p>
+<h1 id="Quadratic-time"><a href="#Quadratic-time" class="headerlink" title="Quadratic time"></a>Quadratic time</h1><p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-14-1.png" alt=""></p>
 <p>Again, and as expected, both methods perform very well.</p>
 <h1 id="Cubic-time"><a href="#Cubic-time" class="headerlink" title="Cubic time"></a>Cubic time</h1><p>Let’s try a test with 20 time intervals where the time grows as the<br>third power.</p>
-<p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png" alt=""></p>
+<p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-15-1.png" alt=""></p>
 <p>Looks good for the parabolic estimator. Let’s see it live in action:</p>
 <pre><code>## [1] &quot;2017-10-26 12:44:56 CEST&quot;
 
@@ -419,7 +419,7 @@ Sys.time()
 
 ## [1] &quot;2017-10-26 12:45:56 CEST&quot;
 </code></pre><h1 id="Square-root-time"><a href="#Square-root-time" class="headerlink" title="Square-root time"></a>Square-root time</h1><p>Let’s try a test with 20 time intervals where the time grows as the<br>square root.</p>
-<p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png" alt=""></p>
+<p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-17-1.png" alt=""></p>
 <p>Looks good for the parabolic estimator and the polynomial estimator<br>after some time. Let’s see it live in action:</p>
 <pre><code>## [1] &quot;2017-10-26 12:45:56 CEST&quot;
 
@@ -467,7 +467,7 @@ Sys.time()
 
 ## [1] &quot;2017-10-26 12:46:57 CEST&quot;
 </code></pre><h1 id="1-exp-time"><a href="#1-exp-time" class="headerlink" title="1-exp time"></a>1-exp time</h1><p>Let’s try a test with 20 time intervals where the time grows as the 1 -<br>exp(-5*frac). This is a case where most of the work is done initially.</p>
-<p><img src="estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png" alt=""></p>
+<p><img src="https://petarmimica.github.io/estatusbar_files/estatusbar_files/figure-markdown_strict/unnamed-chunk-19-1.png" alt=""></p>
 <p>Both estimators do a good job after some time, but that may not be very<br>useful, since most of the calculation is spent in the early part, where<br>the estimators overestimate the time of completion.</p>
 <pre><code>## [1] &quot;2017-10-26 12:46:57 CEST&quot;
 
@@ -518,7 +518,7 @@ Sys.time()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" data-id="cj98cpxet000180sr3ibjhn0g" class="article-share-link">Share</a>
+      <a data-url="http://petarmimica.github.io/2017/10/26/A-simple-status-progress-bar-with-time-estimator/" data-id="cj98d0zwo0000cbsrfupk0flt" class="article-share-link">Share</a>
       
       
     </footer>
